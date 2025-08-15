@@ -1,95 +1,37 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Typography from "@mui/material/Typography";
+import { Box } from "@mui/material";
 
-export default function Home() {
+export default function MainPage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+    <Box>
+      <Typography sx={{ marginBottom: 2 }}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus
+        non enim praesent elementum facilisis leo vel. Risus at ultrices mi
+        tempus imperdiet. Semper risus in hendrerit gravida rutrum quisque non
+        tellus. Convallis convallis tellus id interdum velit laoreet id donec
+        ultrices. Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl
+        suscipit adipiscing bibendum est ultricies integer quis. Cursus euismod
+        quis viverra nibh cras. Metus vulputate eu scelerisque felis imperdiet
+        proin fermentum leo. Mauris commodo quis imperdiet massa tincidunt. Cras
+        tincidunt lobortis feugiat vivamus at augue. At augue eget arcu dictum
+        varius duis at consectetur lorem. Velit sed ullamcorper morbi tincidunt.
+        Lorem donec massa sapien faucibus et molestie ac.
+      </Typography>
+      <Typography sx={{ marginBottom: 2 }}>
+        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
+        ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar elementum
+        integer enim neque volutpat ac tincidunt. Ornare suspendisse sed nisi
+        lacus sed viverra tellus. Purus sit amet volutpat consequat mauris.
+        Elementum eu facilisis sed odio morbi. Euismod lacinia at quis risus sed
+        vulputate odio. Morbi tincidunt ornare massa eget egestas purus viverra
+        accumsan in. In hendrerit gravida rutrum quisque non tellus orci ac.
+        Pellentesque nec nam aliquam sem et tortor. Habitant morbi tristique
+        senectus et. Adipiscing elit duis tristique sollicitudin nibh sit.
+        Ornare aenean euismod elementum nisi quis eleifend. Commodo viverra
+        maecenas accumsan lacus vel facilisis. Nulla posuere sollicitudin
+        aliquam ultrices sagittis orci a.
+      </Typography>
+    </Box>
   );
 }

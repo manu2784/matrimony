@@ -10,7 +10,6 @@ var http = require("http");
 let connection = require("../dbconnection");
 
 require("dotenv").config({ path: `.env.${process.env.NODE_ENV}` });
-console.log(`.env.${process.env.NODE_ENV}`);
 
 /**
  * Get port from environment and store in Express.

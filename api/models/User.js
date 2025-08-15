@@ -27,9 +27,6 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 255,
   },
-  permission: {
-    type: Number, // 1-superadmin, 2-account-manager, 3-company-admin, 4- team-admin, 5-user
-  },
   org: {
     type: mongoose.ObjectId,
   },

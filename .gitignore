@@ -2,3 +2,8 @@ node_modules
 api/node_modules
 package-lock.json
 api/package-lock.json
+random.txt
+.env.local
+api/.env.local
+.env
+api/.env
