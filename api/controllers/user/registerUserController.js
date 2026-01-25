@@ -12,7 +12,6 @@ exports.registerUserController = async (req, res) => {
   // find an existing user
   if (await existingUser("email", req.body.email))
     return res.status(400).send("User already registered.");
-
   let user;
   user = new User(req.body);
 
@@ -22,7 +21,6 @@ exports.registerUserController = async (req, res) => {
   await user.save();
 
   // (update team db)
-
   if (!user.isActive()) {
     return res.send({
       _id: user._id,
