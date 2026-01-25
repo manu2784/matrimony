@@ -18,7 +18,6 @@ module.exports = async function (req, res) {
   }
 
   if (!match || !user || !user.isActive()) {
-    console.log("=================>", match);
     res.status(403).send("incorrect credentials");
     return;
   }
