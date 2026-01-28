@@ -1,10 +1,9 @@
-import { createContext } from 'react';
+import { createContext } from "react";
 
 export type AuthContextType = {
-    token: string
-}
+  token: string;
+};
 
 export const AuthContext = createContext<AuthContextType>({
-    token: 'test hello world'
+  token: "test hello world",
 });
-
