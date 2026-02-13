@@ -7,3 +7,4 @@ random.txt
 api/.env.local
 .env
 api/.env
+api/logs
