@@ -12,6 +12,7 @@ const {
 } = require("../controllers/user/deleteUserController");
 const authenticate = require("../middlewares/authentication");
 const authorize = require("../middlewares/authorization");
+const userController = require("../controllers/user/userController");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -23,7 +24,6 @@ router.delete("/delete", deleteUserController);
 
 // must be authenticated
 router.use(authenticate);
-
 router.put("/update", authorize("user"), updateUserController);
-
+router.get("/me", authorize("user"), userController);
 module.exports = router;

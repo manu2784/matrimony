@@ -1,20 +1,19 @@
-'use strict';
+"use strict";
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 module.exports = function (req, res, next) {
-	// get the token from the header if present
-	const token = req.headers['x-access-token'] || req.headers['authorization'];
-	// if no token found, return response (without going to the next middelware)
-	if (!token) return res.status(401).send('Access denied. No token provided.');
+  let token = req.headers["x-access-token"] || req.headers["authorization"];
 
-	try {
-		// if can verify the token, set req.user and pass to next middleware
-		const decoded = jwt.verify(token, process.env.myprivatekey);
-		req.user = decoded;
-		next();
-	} catch (ex) {
-		// if invalid token
-		res.status(400).send('Invalid token.');
-	}
+  if (!token) token = req.cookies["token"];
+
+  if (!token) return res.status(401).send("Access denied. No token provided.");
+
+  try {
+    const decoded = jwt.verify(token, process.env.myprivatekey);
+    req.user = decoded;
+    next();
+  } catch (ex) {
+    res.status(400).send("Invalid token.");
+  }
 };

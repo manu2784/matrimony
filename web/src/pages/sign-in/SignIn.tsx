@@ -25,7 +25,7 @@ import {
   FacebookIcon,
   SitemarkIcon,
 } from "./components/CustomIcons";
-import { AuthContext } from "../../store/authentication-context";
+// import { AuthContext } from "../../store/context/authContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -75,7 +75,7 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  const { token } = React.useContext(AuthContext);
+  // const { token } = React.useContext(AuthContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -146,7 +146,7 @@ export default function SignIn() {
             variant="h4"
             sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
           >
-            Sign in {token ? token : "none"}
+            Sign in
           </Typography>
           <Form method="post" action="/sign-in">
             <Box

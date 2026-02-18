@@ -6,8 +6,10 @@ const logger = require("../modules/logger");
 module.exports = async function (req, res) {
   const { email, password } = req.body;
   let match, user;
+
   try {
-    user = await User.findOne({ email });
+    user = await User.findOne({ email: email.trim().toLowerCase() });
+
     if (user) match = await bcrypt.compare(password, user.password);
   } catch (e) {
     logger.log({
@@ -23,6 +25,14 @@ module.exports = async function (req, res) {
   }
 
   const token = user.generateAuthToken();
-  // res.header('x-auth-token', token).send();
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production" ? true : false,
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+
+  res.setHeader("Access-Control-Allow-Credentials", "true");
   res.send(token);
 };
