@@ -1,14 +1,16 @@
 "use strict";
-const bcrypt = require("bcrypt");
-const { User } = require("../models/User");
-const logger = require("../modules/logger");
+
+const { hashToken } = require("../helpers/hashToken");
+const { RefreshToken } = require("../models/RefreshToken");
 
 module.exports = async function (req, res) {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,
-    sameSite: "strict",
+  const token = req.cookies.refreshToken;
+  if (!token) return res.sendStatus(204);
+
+  await RefreshToken.deleteOne({
+    tokenHash: hashToken(token),
   });
 
-  res.json({ message: "Logged out successfully" });
+  res.clearCookie("refreshToken");
+  res.sendStatus(204);
 };

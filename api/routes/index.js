@@ -3,6 +3,7 @@ var router = express.Router();
 const loginController = require("../controllers/loginController");
 const welcomeController = require("../controllers/welcomeController");
 const logoutController = require("../controllers/logoutController");
+const { refreshController } = require("../controllers/refreshController");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -11,5 +12,6 @@ router.get("/", function (req, res, next) {
 router.get("/welcome", welcomeController);
 router.post("/login", loginController);
 router.post("/logout", logoutController);
+router.post("/refresh", refreshController);
 
 module.exports = router;

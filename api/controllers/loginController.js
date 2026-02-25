@@ -2,7 +2,15 @@
 const bcrypt = require("bcrypt");
 const { User } = require("../models/User");
 const logger = require("../modules/logger");
+const { hashToken } = require("../helpers/hashToken");
+const { RefreshToken } = require("../models/RefreshToken");
 
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: false,
+  sameSite: "lax",
+  path: "/",
+};
 module.exports = async function (req, res) {
   const { email, password } = req.body;
   let match, user;
@@ -24,15 +32,20 @@ module.exports = async function (req, res) {
     return;
   }
 
-  const token = user.generateAuthToken();
+  const acessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production" ? true : false,
-    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
-    maxAge: 24 * 60 * 60 * 1000,
+  await RefreshToken.create({
+    userId: user._id,
+    tokenHash: hashToken(refreshToken),
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+  });
+
+  res.cookie("refreshToken", refreshToken, {
+    ...COOKIE_OPTIONS,
+    maxAge: 30 * 24 * 60 * 60 * 1000,
   });
 
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  res.send(token);
+  res.send(acessToken);
 };

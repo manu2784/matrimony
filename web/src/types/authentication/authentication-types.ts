@@ -9,5 +9,5 @@ export interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  refreshUser: () => Promise<void>;
+  getAccessToken: () => string | null;
 }

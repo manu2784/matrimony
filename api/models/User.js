@@ -52,12 +52,19 @@ UserSchema.methods.isActive = function () {
 };
 
 //custom method to generate authToken
-UserSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAccessToken = function () {
   const token = jwt.sign(
     { _id: this._id, permission: this.permission, orgs: this.orgs },
-    process.env.myprivatekey
+    process.env.myprivatekey,
+    { expiresIn: process.env.access_token_expiry_time },
   );
   return token;
+};
+
+UserSchema.methods.generateRefreshToken = function () {
+  return jwt.sign({ _id: this._id }, process.env.refresh_token_private_key, {
+    expiresIn: process.env.refresh_token_expiry_time,
+  });
 };
 
 const User = mongoose.model("User", UserSchema);

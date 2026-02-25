@@ -28,7 +28,7 @@ exports.registerUserController = async (req, res) => {
     });
   }
 
-  const token = user.generateAuthToken();
+  const token = user.generateAccessToken();
   res.header("x-auth-token", token).send({
     _id: user._id,
     email: user.email,

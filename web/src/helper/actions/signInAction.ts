@@ -1,6 +1,6 @@
 import type { Route } from "./+types/project";
 import { redirect } from "react-router";
-import { setJwt } from "../../helper/jwt/jwt";
+import { setAccessToken } from "../../service/apiFetch";
 
 export async function signInAction({ request }: Route.ActionArgs) {
   const data = await request.formData();
@@ -21,11 +21,9 @@ export async function signInAction({ request }: Route.ActionArgs) {
       },
       body: JSON.stringify(payload),
     });
-  
     const token = await response.text();
-    console.log("token", response.status);
     if (response.status==200 && token) {
-      setJwt(token);
+      setAccessToken(token);
       throw redirect("/dashboard");
     }
   }
