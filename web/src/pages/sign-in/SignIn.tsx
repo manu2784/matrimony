@@ -15,7 +15,6 @@ import {
   Card as MuiCard,
   styled,
 } from "@mui/material";
-
 import ForgotPassword from "./components/ForgotPassword";
 import { Form } from "react-router";
 // import AppTheme from '../shared-theme/AppTheme';

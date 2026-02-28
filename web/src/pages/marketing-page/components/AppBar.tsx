@@ -1,7 +1,7 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
+import { AppBar as MuiBar } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
@@ -11,8 +11,9 @@ import MenuItem from "@mui/material/MenuItem";
 import Drawer from "@mui/material/Drawer";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import logo from "../../../assets/logo.png";
 // import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
-import Sitemark from "./SitemarkIcon";
+// import Sitemark from "./SitemarkIcon";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -30,7 +31,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "8px 12px",
 }));
 
-export default function AppAppBar() {
+export default function AppBar() {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -38,7 +39,7 @@ export default function AppAppBar() {
   };
 
   return (
-    <AppBar
+    <MuiBar
       position="fixed"
       enableColorOnDark
       sx={{
@@ -55,7 +56,7 @@ export default function AppAppBar() {
           >
             {/* <Sitemark /> */}
             <Box>
-              <img src="/logo.png" alt="Logo" style={{ height: "60px" }} />
+              <img src={logo} alt="Logo" style={{ height: "60px" }} />
             </Box>
             <Box
               sx={{
@@ -163,6 +164,6 @@ export default function AppAppBar() {
           </Box>
         </StyledToolbar>
       </Container>
-    </AppBar>
+    </MuiBar>
   );
 }

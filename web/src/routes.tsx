@@ -7,16 +7,22 @@ import { signInAction } from "./helper/actions/signInAction.ts";
 import signUpAction from "./helper/actions/signUpAction.ts";
 import Dashboard from "./pages/dashboard/Dashboard.tsx";
 import { requireAuthLoader } from "./helper/loaders/authLoader.ts";
+import AuthLayout from "./layouts/AuthLayout.tsx";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />, // layout
+    element: <App />,
     children: [
       { index: true, element: <Home /> },
       { path: "/dashboard", element: <Dashboard />, loader: requireAuthLoader },
     ],
   },
-  { path: "/sign-in", element: <SignIn />, action: signInAction },
-  { path: "/sign-up", element: <SignUp />, action: signUpAction },
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: "/sign-in", element: <SignIn />, action: signInAction },
+      { path: "/sign-up", element: <SignUp />, action: signUpAction },
+    ],
+  }
 ]);

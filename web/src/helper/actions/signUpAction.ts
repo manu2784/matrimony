@@ -22,7 +22,7 @@ export default async function signUpAction({ request }: Route.ActionArgs) {
       },
       body: JSON.stringify(payload),
     });
-    if (response) console.log(await response.json());
+    if (response) console.log(response.status);
     return;
   }
   return undefined;
