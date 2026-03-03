@@ -14,12 +14,14 @@ import {
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
-
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+import { useLocation } from 'react-router-dom';
 import logo from '../assets/logo-trans.png';
 
+const pages = ['Products', 'Pricing', 'Blog'];
+
 function ResponsiveAppBar() {
+
+    const { pathname } = useLocation();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -109,6 +111,16 @@ function ResponsiveAppBar() {
                                 {page}
                             </Button>
                         ))}
+                    </Box>
+                    <Box sx={{ flexGrow: 0 }}>
+                        <Button
+                            href={pathname === "/sign-in" ? "sign-up" : "sign-in"}
+                            color="text-primary"
+                            variant="text"
+                            size="small"
+                        >
+                            {pathname === "/sign-in" ? "Sign up" : "Sign in"}
+                        </Button>
                     </Box>
                 </Toolbar>
             </Container>

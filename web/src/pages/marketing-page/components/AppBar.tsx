@@ -150,7 +150,7 @@ export default function AppBar() {
                 <MenuItem>Blog</MenuItem>
                 <Divider sx={{ my: 3 }} />
                 <MenuItem>
-                  <Button color="primary" variant="contained" fullWidth>
+                  <Button href="/sign-up" color="primary" variant="contained" fullWidth>
                     Sign up
                   </Button>
                 </MenuItem>

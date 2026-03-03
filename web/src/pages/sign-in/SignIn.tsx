@@ -22,7 +22,7 @@ import { Form } from "react-router";
 import {
   GoogleIcon,
   FacebookIcon,
-  SitemarkIcon,
+  // SitemarkIcon,
 } from "./components/CustomIcons";
 // import { AuthContext } from "../../store/context/authContext";
 
@@ -139,7 +139,7 @@ export default function SignIn() {
           </Button>
         </Box>
         <Card variant="outlined">
-          <SitemarkIcon />
+          {/* <SitemarkIcon /> */}
           <Typography
             component="h1"
             variant="h4"

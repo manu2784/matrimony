@@ -8,6 +8,7 @@ import signUpAction from "./helper/actions/signUpAction.ts";
 import Dashboard from "./pages/dashboard/Dashboard.tsx";
 import { requireAuthLoader } from "./helper/loaders/authLoader.ts";
 import AuthLayout from "./layouts/AuthLayout.tsx";
+import DashboardLayout from "./pages/dashboard/DashboardLayout.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -15,8 +16,14 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: "/dashboard", element: <Dashboard />, loader: requireAuthLoader },
     ],
+  },
+  {
+    element: <DashboardLayout />,
+    children:
+      [
+        { path: "/dashboard", element: <Dashboard />, loader: requireAuthLoader }
+      ]
   },
   {
     element: <AuthLayout />,

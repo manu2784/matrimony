@@ -12,7 +12,7 @@ export default async function signUpAction({ request }: Route.ActionArgs) {
     email: email,
     password: password,
   };
-  console.log(payload);
+
   if (firstname && lastname && email && password) {
     const response = await fetch("http://localhost:3000/users/register", {
       method: "POST",
@@ -22,8 +22,9 @@ export default async function signUpAction({ request }: Route.ActionArgs) {
       },
       body: JSON.stringify(payload),
     });
-    if (response) console.log(response.status);
-    return;
+    const user = await response.json();
+    if (response.status ===200)
+    return user;
   }
   return undefined;
 }

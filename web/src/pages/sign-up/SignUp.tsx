@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Form } from "react-router";
+import { Form, useActionData } from "react-router";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import {
@@ -22,7 +22,7 @@ import {
 import {
   GoogleIcon,
   FacebookIcon,
-  SitemarkIcon,
+  // SitemarkIcon,
 } from "./components/CustomIcons";
 
 const Card = styled(MuiCard)(({ theme }) => ({
@@ -74,7 +74,7 @@ export default function SignUp() {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState("");
-
+  const user = useActionData() as { _id: string, email: string } | undefined;
   const validateInputs = () => {
     const email = document.getElementById("email") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
@@ -130,7 +130,7 @@ export default function SignUp() {
     <>
       <CssBaseline enableColorScheme />
       {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
-      <SignUpContainer direction="column" justifyContent="space-between">
+      <SignUpContainer direction="column" justifyContent="flex-start" >
         <Box
           sx={{
             display: { md: "flex" },
@@ -142,8 +142,24 @@ export default function SignUp() {
             Back
           </Button>
         </Box>
-        <Card variant="outlined">
-          <SitemarkIcon />
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+          {user &&
+            <Typography variant="h5">
+              Welcome, {user.email}!
+              <Box sx={{ flexGrow: 0 }}>
+                <Button
+                  href="sign-in"
+                  color="text-primary"
+                  variant="text"
+                  size="small"
+                >
+                  Sign in
+                </Button>
+              </Box>
+            </Typography>}
+        </Box>
+        {!user && <Card variant="outlined">
+          {/* <SitemarkIcon /> */}
           <Typography
             component="h1"
             variant="h4"
@@ -243,7 +259,7 @@ export default function SignUp() {
               </Typography>
             </Box>
           </Form>
-        </Card>
+        </Card>}
       </SignUpContainer>
     </>
   );
