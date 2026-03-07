@@ -14,9 +14,10 @@ import {
   Stack,
   Card as MuiCard,
   styled,
+  Alert,
 } from "@mui/material";
 import ForgotPassword from "./components/ForgotPassword";
-import { Form } from "react-router";
+import { Form, useActionData, useSubmit } from "react-router";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import {
@@ -74,7 +75,9 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [open, setOpen] = React.useState(false);
-  // const { token } = React.useContext(AuthContext);
+  const actionData = useActionData() as { error?: string } | undefined;
+  const submit = useSubmit();
+  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -84,17 +87,19 @@ export default function SignIn() {
     setOpen(false);
   };
 
-  // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  //   if (emailError || passwordError) {
-  //     event.preventDefault();
-  //     return;
-  //   }
-  //   const data = new FormData(event.currentTarget);
-  //   console.log({
-  //     email: data.get('email'),
-  //     password: data.get('password'),
-  //   });
-  // };
+  const handleSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget as HTMLFormElement);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+
+      submit(data, { method: "post", action: "/sign-in" });
+      return;
+
+    }, 1000);
+  }, [submit]);
 
   const validateInputs = () => {
     const email = document.getElementById("email") as HTMLInputElement;
@@ -147,7 +152,14 @@ export default function SignIn() {
           >
             Sign in
           </Typography>
-          <Form method="post" action="/sign-in">
+          {actionData && actionData.error && (
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <Alert severity="error" sx={{ width: "100%" }}>
+                {actionData?.error}
+              </Alert>
+            </Box>
+          )}
+          <Form method="post" onSubmit={handleSubmit}>
             <Box
               sx={{
                 display: "flex",
@@ -196,9 +208,9 @@ export default function SignIn() {
               />
               <ForgotPassword open={open} handleClose={handleClose} />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
+                type="submit"
                 onClick={validateInputs}
               >
                 Sign in
@@ -244,7 +256,7 @@ export default function SignIn() {
             </Typography>
           </Box>
         </Card>
-      </SignInContainer>
+      </SignInContainer >
     </>
   );
 }

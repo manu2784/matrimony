@@ -26,6 +26,9 @@ export async function signInAction({ request }: Route.ActionArgs) {
       setAccessToken(token);
       throw redirect("/dashboard");
     }
+        if (response.status==403) {
+        return { error: "Invalid email or password" };
+    }
   }
   return;
 }

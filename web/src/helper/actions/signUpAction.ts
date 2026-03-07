@@ -1,7 +1,6 @@
 import type { Route } from "./+types/project";
 
 export default async function signUpAction({ request }: Route.ActionArgs) {
-  console.log("here", request);
   const data = await request.formData();
   const [firstname, lastname] = data.get("name").split(" ");
   const email = data.get("email");
