@@ -1,4 +1,3 @@
 export { chartsCustomizations } from "./charts";
-export { dataGridCustomizations } from "./dataGrid";
-export { datePickersCustomizations } from "./datePickers";
+// export { dataGridCustomizations } from "./dataGrid";
 export { treeViewCustomizations } from "./treeView";

@@ -1,8 +1,8 @@
-import type { Route } from "./+types/project";
+import type { ActionFunctionArgs } from "react-router-dom";
 import { redirect } from "react-router";
 import { setAccessToken } from "../../service/apiFetch";
 
-export async function signInAction({ request }: Route.ActionArgs) {
+export async function signInAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
 
   const email = data.get("email");

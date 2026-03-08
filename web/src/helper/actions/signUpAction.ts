@@ -1,8 +1,10 @@
-import type { Route } from "./+types/project";
+import type { ActionFunctionArgs } from "react-router-dom";
 
-export default async function signUpAction({ request }: Route.ActionArgs) {
+export default async function signUpAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
-  const [firstname, lastname] = data.get("name").split(" ");
+
+  const name = data.get("name");
+  const [firstname, lastname] = name?.toString().split(" ") ?? [];
   const email = data.get("email");
   const password = data.get("password");
   const payload = {
