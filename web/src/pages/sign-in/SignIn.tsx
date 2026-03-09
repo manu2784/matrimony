@@ -16,7 +16,7 @@ import {
   styled,
   Alert,
 } from "@mui/material";
-// import ForgotPassword from "./components/ForgotPassword";
+import ForgotPassword from "./components/ForgotPassword";
 import { Form, useActionData, useSubmit } from "react-router";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
@@ -74,18 +74,18 @@ export default function SignIn() {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  // const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const actionData = useActionData() as { error?: string } | undefined;
   const submit = useSubmit();
   const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // const handleClickOpen = () => {
-  //   setOpen(true);
-  // };
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
 
-  // const handleClose = () => {
-  //   setOpen(false);
-  // };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -96,6 +96,7 @@ export default function SignIn() {
     timerRef.current = setTimeout(() => {
 
       submit(data, { method: "post", action: "/sign-in" });
+
       return;
 
     }, 1000);
@@ -206,7 +207,7 @@ export default function SignIn() {
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
+              <ForgotPassword open={open} handleClose={handleClose} />
               <Button
                 fullWidth
                 variant="contained"
@@ -218,7 +219,7 @@ export default function SignIn() {
               <Link
                 component="button"
                 type="button"
-                // onClick={handleClickOpen}
+                onClick={handleClickOpen}
                 variant="body2"
                 sx={{ alignSelf: "center" }}
               >
