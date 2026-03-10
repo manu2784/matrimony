@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "react-router-dom";
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export default async function signUpAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
