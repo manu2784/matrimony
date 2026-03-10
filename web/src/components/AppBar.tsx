@@ -1,4 +1,3 @@
-import * as React from 'react';
 import {
     AppBar,
     Box,
@@ -7,15 +6,14 @@ import {
     Typography,
     Menu,
     Container,
-    Avatar,
     Button,
-    Tooltip,
     MenuItem,
 } from '@mui/material';
 import AdbIcon from '@mui/icons-material/Adb';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useLocation } from 'react-router-dom';
 import logo from '../assets/logo-trans.png';
+import React from 'react';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 
@@ -23,22 +21,22 @@ function ResponsiveAppBar() {
 
     const { pathname } = useLocation();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    // const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
-    };
+    // const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    //     setAnchorElUser(event.currentTarget);
+    // };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+    // const handleCloseUserMenu = () => {
+    //     setAnchorElUser(null);
+    // };
 
     return (
         <AppBar position="static">
@@ -115,7 +113,7 @@ function ResponsiveAppBar() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Button
                             href={pathname === "/sign-in" ? "sign-up" : "sign-in"}
-                            color="text-primary"
+                            color="primary"
                             variant="text"
                             size="small"
                         >

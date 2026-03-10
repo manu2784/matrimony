@@ -149,7 +149,7 @@ export default function SignUp() {
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   href="sign-in"
-                  color="text-primary"
+                  color="primary"
                   variant="text"
                   size="small"
                 >

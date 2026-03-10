@@ -1,7 +1,6 @@
-import * as React from "react";
 import { useColorScheme } from "@mui/material/styles";
 import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectProps } from "@mui/material/Select";
+import Select, { type SelectProps } from "@mui/material/Select";
 
 export default function ColorModeSelect(props: SelectProps) {
   const { mode, setMode } = useColorScheme();
@@ -15,7 +14,7 @@ export default function ColorModeSelect(props: SelectProps) {
         setMode(event.target.value as "system" | "light" | "dark")
       }
       SelectDisplayProps={{
-        // @ts-ignore
+        //@ts-expect-error mui doesn't have this prop but it's needed for the screenshot tests
         "data-screenshot": "toggle-mode",
       }}
       {...props}
