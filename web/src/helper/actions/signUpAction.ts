@@ -16,7 +16,7 @@ export default async function signUpAction({ request }: ActionFunctionArgs) {
   };
 
   if (firstname && lastname && email && password) {
-    const response = await fetch(`${API_BASE_URL}/users/register`, {
+    const response = await fetch('/api/users/register', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
