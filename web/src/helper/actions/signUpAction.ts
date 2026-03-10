@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "react-router-dom";
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export default async function signUpAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
@@ -16,7 +16,7 @@ export default async function signUpAction({ request }: ActionFunctionArgs) {
   };
 
   if (firstname && lastname && email && password) {
-    const response = await fetch('/api/users/register', {
+    const response = await fetch(`${API_BASE_URL}/users/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
