@@ -1,6 +1,7 @@
 import type { ActionFunctionArgs } from "react-router-dom";
 import { redirect } from "react-router";
 import { setAccessToken } from "../../service/apiFetch";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export async function signInAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
@@ -12,7 +13,7 @@ export async function signInAction({ request }: ActionFunctionArgs) {
     password: password,
   };
   if (email && password) {
-    const response = await fetch("http://localhost:3000/login", {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       credentials: "include",
       headers: {

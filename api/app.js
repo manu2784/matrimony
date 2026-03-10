@@ -15,12 +15,7 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(
-  cors({
-    origin: process.env.webHost,
-    credentials: true,
-  }),
-);
+app.use(cors());
 app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
