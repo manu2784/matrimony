@@ -1,8 +1,12 @@
-import type { Route } from "./+types/project";
+import type { ActionFunctionArgs } from "react-router-dom";
+import type { User } from "../../types/authentication/authentication-types";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
-export default async function signUpAction({ request }: Route.ActionArgs) {
+export default async function signUpAction({ request }: ActionFunctionArgs) {
   const data = await request.formData();
-  const [firstname, lastname] = data.get("name").split(" ");
+
+  const name = data.get("name");
+  const [firstname, lastname] = name?.toString().split(" ") ?? [];
   const email = data.get("email");
   const password = data.get("password");
   const payload = {
@@ -11,9 +15,12 @@ export default async function signUpAction({ request }: Route.ActionArgs) {
     email: email,
     password: password,
   };
+  let response: Response;
+  let user: User | undefined;
 
   if (firstname && lastname && email && password) {
-    const response = await fetch("http://localhost:3000/users/register", {
+
+     response = await fetch(`${API_BASE_URL}/users/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,9 +28,15 @@ export default async function signUpAction({ request }: Route.ActionArgs) {
       },
       body: JSON.stringify(payload),
     });
-    const user = await response.json();
+     user = await response.json();
+
+ 
     if (response.status ===200)
     return user;
+    
+    if (response.status===400) {
+        return user;
+    }
   }
   return undefined;
 }

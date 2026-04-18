@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -20,16 +19,16 @@ export default function ForgotPassword({
     <Dialog
       open={open}
       onClose={handleClose}
-      slotProps={{
-        paper: {
-          component: "form",
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
-            event.preventDefault();
-            handleClose();
-          },
-          sx: { backgroundImage: "none" },
-        },
-      }}
+    // slotProps={{
+    //   paper: {
+    //     component: "form",
+    //     onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+    //       event.preventDefault();
+    //       handleClose();
+    //     },
+    //     sx: { backgroundImage: "none" },
+    //   },
+    // }}
     >
       <DialogTitle>Reset password</DialogTitle>
       <DialogContent

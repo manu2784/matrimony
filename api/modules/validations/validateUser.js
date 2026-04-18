@@ -10,7 +10,12 @@ function validateUser(user, props) {
     firstName: Joi.string().alphanum().min(3).max(30),
     lastName: Joi.string().alphanum().min(3).max(30),
     email: Joi.string().email().required(),
-    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).messages({
+      "string.min": "Password must be at least 8 characters long",
+      "any.required": "Password is required",
+      "string.pattern.base":
+        "Password must be at least 8 characters long and include uppercase, lowercase, and a number",
+    }),
     org: Joi.string(),
     accountManagerOrgs: Joi.array().items(Joi.string()).min(1),
     rosters: Joi.array().items(Joi.string()),

@@ -1,4 +1,3 @@
-import type { } from "@mui/x-date-pickers/themeAugmentation";
 import type { } from "@mui/x-charts/themeAugmentation";
 import type { } from "@mui/x-data-grid-pro/themeAugmentation";
 import type { } from "@mui/x-tree-view/themeAugmentation";
@@ -12,8 +11,6 @@ import SideMenu from "./components/SideMenu";
 import AppTheme from "../shared-theme/AppTheme";
 import {
     chartsCustomizations,
-    dataGridCustomizations,
-    datePickersCustomizations,
     treeViewCustomizations,
 } from "./theme/customizations";
 import { useAuth } from "../../store/context/useAuth";
@@ -22,8 +19,6 @@ import { Outlet } from "react-router-dom";
 
 const xThemeComponents = {
     ...chartsCustomizations,
-    ...dataGridCustomizations,
-    ...datePickersCustomizations,
     ...treeViewCustomizations,
 };
 

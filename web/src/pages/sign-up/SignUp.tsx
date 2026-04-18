@@ -3,6 +3,7 @@ import { Form, useActionData } from "react-router";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -24,6 +25,7 @@ import {
   FacebookIcon,
   // SitemarkIcon,
 } from "./components/CustomIcons";
+import { type user } from "../../types/authentication/authentication-types"
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -74,7 +76,8 @@ export default function SignUp() {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState("");
-  const user = useActionData() as { _id: string, email: string } | undefined;
+  const user: user | undefined = useActionData() as user | undefined;
+
   const validateInputs = () => {
     const email = document.getElementById("email") as HTMLInputElement;
     const password = document.getElementById("password") as HTMLInputElement;
@@ -143,13 +146,13 @@ export default function SignUp() {
           </Button>
         </Box>
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-          {user &&
+          {user?._id &&
             <Typography variant="h5">
               Welcome, {user.email}!
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   href="sign-in"
-                  color="text-primary"
+                  color="primary"
                   variant="text"
                   size="small"
                 >
@@ -158,7 +161,14 @@ export default function SignUp() {
               </Box>
             </Typography>}
         </Box>
-        {!user && <Card variant="outlined">
+        {user && user.error && (
+          <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+            <Alert severity="error" sx={{ width: "100%" }}>
+              {user?.error}
+            </Alert>
+          </Box>
+        )}
+        {(!user || user.error) && <Card variant="outlined">
           {/* <SitemarkIcon /> */}
           <Typography
             component="h1"

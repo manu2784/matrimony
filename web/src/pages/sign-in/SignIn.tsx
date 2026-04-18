@@ -96,6 +96,7 @@ export default function SignIn() {
     timerRef.current = setTimeout(() => {
 
       submit(data, { method: "post", action: "/sign-in" });
+
       return;
 
     }, 1000);

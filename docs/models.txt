@@ -1,0 +1,53 @@
+// Orgs — two types
+Org {
+  id, name,
+  type: 'provider' | 'tenant',
+  parentOrgId: null | orgId   // tenant can belong to a provider
+}
+
+// Users belong to one org
+User {
+  id, email,
+  orgId,          // which org they belong to
+  orgType         // 'provider' | 'tenant'  (denormalised for fast checks)
+}
+
+// Roles are defined at org level
+Role {
+  id, name,
+  orgType: 'provider' | 'tenant',   // which org type this role is valid in
+  level: 1 | 2 | 3 | 4             // hierarchy rank — lower = more powerful
+}
+
+// e.g.
+// { name: 'super_admin',      orgType: 'provider', level: 1 }
+// { name: 'account_manager',  orgType: 'provider', level: 2 }
+// { name: 'tenant_admin',     orgType: 'tenant',   level: 1 }
+// { name: 'sub_admin',        orgType: 'tenant',   level: 2 }
+// { name: 'member',           orgType: 'tenant',   level: 3 }
+
+// User ↔ Role assignment (scoped to org context)
+UserRole {
+  userId,
+  roleId,
+  orgId,              // the org this role applies in
+  assignedBy,
+  assignedAt
+}
+
+// Sub Admin resource ownership
+ResourceGrant {
+  userId,
+  resourceType,       // 'project' | 'workspace' | etc.
+  resourceId,
+  orgId,
+  grantedBy,
+  grantedAt
+}
+
+// Account Manager ↔ Tenant mapping
+AccountManagerTenant {
+  accountManagerUserId,
+  tenantOrgId,
+  assignedAt
+}

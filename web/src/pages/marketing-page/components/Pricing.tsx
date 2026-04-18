@@ -1,4 +1,3 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
@@ -111,17 +110,17 @@ export default function Pricing() {
                   gap: 4,
                 },
                 tier.title === "Professional" &&
-                  ((theme) => ({
-                    border: "none",
+                ((theme) => ({
+                  border: "none",
+                  background:
+                    "radial-gradient(circle at 50% 0%, hsl(220, 20%, 35%), hsl(220, 30%, 6%))",
+                  boxShadow: `0 8px 12px hsla(220, 20%, 42%, 0.2)`,
+                  ...theme.applyStyles("dark", {
                     background:
-                      "radial-gradient(circle at 50% 0%, hsl(220, 20%, 35%), hsl(220, 30%, 6%))",
-                    boxShadow: `0 8px 12px hsla(220, 20%, 42%, 0.2)`,
-                    ...theme.applyStyles("dark", {
-                      background:
-                        "radial-gradient(circle at 50% 0%, hsl(220, 20%, 20%), hsl(220, 30%, 16%))",
-                      boxShadow: `0 8px 12px hsla(0, 0%, 0%, 0.8)`,
-                    }),
-                  })),
+                      "radial-gradient(circle at 50% 0%, hsl(220, 20%, 20%), hsl(220, 30%, 16%))",
+                    boxShadow: `0 8px 12px hsla(0, 0%, 0%, 0.8)`,
+                  }),
+                })),
               ]}
             >
               <CardContent>
