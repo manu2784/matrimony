@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs } from "react-router-dom";
+import type { User } from "../../types/authentication/authentication-types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export default async function signUpAction({ request }: ActionFunctionArgs) {
@@ -14,9 +15,12 @@ export default async function signUpAction({ request }: ActionFunctionArgs) {
     email: email,
     password: password,
   };
+  let response: Response;
+  let user: User | undefined;
 
   if (firstname && lastname && email && password) {
-    const response = await fetch(`${API_BASE_URL}/users/register`, {
+
+     response = await fetch(`${API_BASE_URL}/users/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,9 +28,15 @@ export default async function signUpAction({ request }: ActionFunctionArgs) {
       },
       body: JSON.stringify(payload),
     });
-    const user = await response.json();
+     user = await response.json();
+
+ 
     if (response.status ===200)
     return user;
+    
+    if (response.status===400) {
+        return user;
+    }
   }
   return undefined;
 }

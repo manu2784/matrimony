@@ -30,6 +30,9 @@ export async function signInAction({ request }: ActionFunctionArgs) {
         if (response.status==403) {
         return { error: "Invalid email or password" };
     }
+            if (response.status==400) {
+        return { error: response.text() };
+    }
   }
   return;
 }

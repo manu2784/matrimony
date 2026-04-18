@@ -1,0 +1,21 @@
+{
+  "name": "matrimony",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/manu2784/matrimony#readme",
+  "bugs": {
+    "url": "https://github.com/manu2784/matrimony/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manu2784/matrimony.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node ./api/bin/www && cd web && npm run dev"
+  }
+}

@@ -8,7 +8,7 @@ const { existingUser } = require("../../helpers/userUtils");
 exports.registerUserController = async (req, res) => {
   // validate the request body first
   const { error } = validateUser(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  if (error) return res.status(400).json({ error: error.details[0].message });
   // find an existing user
   if (await existingUser("email", req.body.email))
     return res.status(400).send("User already registered.");
