@@ -4,7 +4,6 @@ import { type User } from "../../types/authentication/authentication-types";
 import { AuthContext } from "./authContext";
 import { setAccessToken, getAccessToken } from "../../service/apiFetch";
 
-
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -43,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const data = await res.json();
 
     setAccessToken(data.accessToken);
-    setUser(data.user);
+    setUser(data);
   }
 
   async function logout() {

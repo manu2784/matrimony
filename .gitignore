@@ -8,3 +8,5 @@ api/.env.local
 .env
 api/.env
 api/logs
+.vscode
+.DS_Store

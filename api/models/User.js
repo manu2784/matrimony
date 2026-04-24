@@ -27,23 +27,17 @@ const UserSchema = new mongoose.Schema({
     minlength: 3,
     maxlength: 255,
   },
-  org: {
-    type: mongoose.ObjectId,
+  orgType: {
+    type: String,
+    enum: ["provider", "tenant"],
   },
-  accountManagerOrgs: {
-    type: [mongoose.ObjectId],
+  orgId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Institute",
+    required: false,
   },
-  rosters: {
-    type: [mongoose.ObjectId],
-  },
+  username: String,
   status: String,
-  teams: [mongoose.ObjectId],
-  availability: Object,
-  acceptedTC: Boolean,
-  location: String,
-  roles: [String],
-  adminTeams: [mongoose.ObjectId],
-  blocked: Boolean,
   phone: Number,
 });
 

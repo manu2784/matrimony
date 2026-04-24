@@ -23,15 +23,15 @@ export async function signInAction({ request }: ActionFunctionArgs) {
       body: JSON.stringify(payload),
     });
     const token = await response.text();
-    if (response.status==200 && token) {
+    if (response.status == 200 && token) {
       setAccessToken(token);
-      throw redirect("/dashboard");
+      throw redirect("/super-admin-dashboard");
     }
-        if (response.status==403) {
-        return { error: "Invalid email or password" };
+    if (response.status == 403) {
+      return { error: "Invalid email or password" };
     }
-            if (response.status==400) {
-        return { error: response.text() };
+    if (response.status == 400) {
+      return { error: response.text() };
     }
   }
   return;

@@ -11,6 +11,7 @@ const {
   deleteUserController,
 } = require("../controllers/user/deleteUserController");
 const authenticate = require("../middlewares/authentication");
+const optionalAuthentication = require("../middlewares/optionalAuthentication");
 const authorize = require("../middlewares/authorization");
 const userController = require("../controllers/user/userController");
 
@@ -18,7 +19,7 @@ const userController = require("../controllers/user/userController");
 router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
-router.post("/register", registerUserController);
+router.post("/register", optionalAuthentication, registerUserController);
 
 router.delete("/delete", deleteUserController);
 

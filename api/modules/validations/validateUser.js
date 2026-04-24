@@ -1,5 +1,4 @@
 "use strict";
-// const Joi = require("@hapi/joi");
 
 const Joi = require("joi");
 
@@ -16,17 +15,9 @@ function validateUser(user, props) {
       "string.pattern.base":
         "Password must be at least 8 characters long and include uppercase, lowercase, and a number",
     }),
-    org: Joi.string(),
-    accountManagerOrgs: Joi.array().items(Joi.string()).min(1),
-    rosters: Joi.array().items(Joi.string()),
-    // status: Joi.string().valid('enabled', 'disabled').required(),
-    teams: Joi.array().items(Joi.string()),
-    availability: Joi.object(),
-    acceptedTC: Joi.boolean(),
-    location: Joi.string(),
-    roles: Joi.array(),
-    blocked: Joi.boolean(),
-    adminTeams: Joi.array().items(Joi.string()),
+    orgId: Joi.string(),
+    orgType: Joi.string().valid("provider", "tenant"),
+    username: Joi.string().alphanum().min(3).max(30),
     phone: Joi.number(),
   };
 

@@ -32,10 +32,9 @@ async function refreshToken(): Promise<void> {
 
 export async function apiFetch(
   input: RequestInfo,
-  init?: RequestInit
+  init?: RequestInit,
 ): Promise<Response> {
   const token = getAccessToken();
-
   const url = API_BASE_URL + input.toString();
 
   const res = await fetch(url, {
