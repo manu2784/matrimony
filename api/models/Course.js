@@ -26,7 +26,7 @@ const courseSchema = new mongoose.Schema(
 
     description: String,
 
-    durationHours: Number,
+    durationWeeks: Number,
 
     instituteId: {
       type: mongoose.Schema.Types.ObjectId,

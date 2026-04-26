@@ -1,13 +1,22 @@
 import Course from "../../models/Course.js";
 import mongoose from "mongoose";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const {
+  createPermission,
+  deletePermission,
+  PermissionServiceError,
+} = require("../../services/permissionService");
 
 export const createCourse = async (req, res) => {
   try {
     const {
       title,
       description,
-      durationHours,
+      durationWeeks,
       instituteId,
+      courseAdminId,
       instructors,
       modules,
       price,
@@ -15,18 +24,24 @@ export const createCourse = async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!title || !instituteId) {
+    if (!title || !instituteId || !courseAdminId) {
       return res.status(400).json({
         success: false,
-        message: "Title and instituteId are required",
+        message: "Title, instituteId and courseAdminId are required",
       });
     }
 
-    // Validate instituteId is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(instituteId)) {
       return res.status(400).json({
         success: false,
         message: "Invalid instituteId format",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(courseAdminId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid courseAdminId format",
       });
     }
 
@@ -68,20 +83,51 @@ export const createCourse = async (req, res) => {
     const course = await Course.create({
       title,
       description,
-      durationHours,
+      durationWeeks,
       instituteId,
       instructors: instructors || [],
       modules: modules || [],
       price,
-      isActive: isActive ?? true,
+      isActive: isActive === undefined ? true : isActive,
     });
+
+    let permissionId = null;
+
+    try {
+      const permission = await createPermission(
+        {
+          userId: courseAdminId,
+          role: "courseAdmin",
+          scopeType: "course",
+          scopeId: course._id,
+        },
+        {
+          actingUserId: req.user?._id,
+        },
+      );
+
+      permissionId = permission._id;
+    } catch (permissionError) {
+      await Course.findByIdAndDelete(course._id);
+      throw permissionError;
+    }
 
     return res.status(201).json({
       success: true,
       message: "Course created successfully",
       data: course,
+      meta: {
+        courseAdminPermissionId: permissionId,
+      },
     });
   } catch (error) {
+    if (error instanceof PermissionServiceError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     // Handle Mongoose validation errors
     if (error.name === "ValidationError") {
       const errors = Object.values(error.errors).map((e) => e.message);

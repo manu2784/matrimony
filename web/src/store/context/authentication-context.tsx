@@ -4,6 +4,8 @@ import { type User } from "../../types/authentication/authentication-types";
 import { AuthContext } from "./authContext";
 import { setAccessToken, getAccessToken } from "../../service/apiFetch";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -30,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   async function login(email: string, password: string) {
-    const res = await fetch("/login", {
+    const res = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -46,7 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   async function logout() {
-    await fetch("/logout", {
+    await fetch(`${API_BASE_URL}/logout`, {
       method: "POST",
       credentials: "include",
     });

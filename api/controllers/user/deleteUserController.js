@@ -12,8 +12,9 @@ exports.deleteUserController = async (req, res) => {
   }
   if (!user) return res.status(400).send("user not found");
 
+  let result;
   try {
-    let result = await user.deleteOne();
+    result = await user.deleteOne();
     console.log(result);
   } catch (e) {
     return res.status(500).send(e);

@@ -1,11 +1,12 @@
 "use strict";
 var express = require("express");
 var router = express.Router();
+const authenticate = require("../middlewares/authentication");
 
 var courseController = require("../controllers/course/courseController");
 var getCourseController = require("../controllers/course/getCourseController");
 
-router.post("/create", courseController.createCourse);
+router.post("/create", authenticate, courseController.createCourse);
 router.get("/", getCourseController.getCourses);
 // router.get("/:id", courseController.getCourseById);
 // router.put("/update/:id", courseController.updateCourse);

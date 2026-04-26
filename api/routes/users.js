@@ -5,6 +5,9 @@ const {
   registerUserController,
 } = require("../controllers/user/registerUserController");
 const {
+  getAllUsersController,
+} = require("../controllers/user/getAllUsersController");
+const {
   updateUserController,
 } = require("../controllers/user/updateUserController");
 const {
@@ -15,16 +18,13 @@ const optionalAuthentication = require("../middlewares/optionalAuthentication");
 const authorize = require("../middlewares/authorization");
 const userController = require("../controllers/user/userController");
 
-/* GET users listing. */
-router.get("/", function (req, res, next) {
-  res.send("respond with a resource");
-});
 router.post("/register", optionalAuthentication, registerUserController);
 
 router.delete("/delete", deleteUserController);
 
 // must be authenticated
 router.use(authenticate);
+router.get("/", getAllUsersController);
 router.put("/update", authorize("user"), updateUserController);
 router.get("/me", authorize("user"), userController);
 module.exports = router;

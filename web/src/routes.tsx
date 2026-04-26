@@ -15,6 +15,9 @@ import AddUser from "./pages/super-admin/views/add-user/AddUser.tsx";
 import { registerUserAction } from "./helper/actions/registerUserAction.ts";
 import AddOrg from "./pages/super-admin/views/add-org/AddOrg.tsx";
 import { createInstituteAction } from "./helper/actions/createInstituteAction.ts";
+import AddCourse from "./pages/super-admin/views/add-course/AddCourse.tsx";
+import { createCourseAction } from "./helper/actions/createCourseAction.ts";
+import Users from "./pages/super-admin/views/users/Users.tsx";
 
 export const router = createBrowserRouter([
   {
@@ -44,6 +47,17 @@ export const router = createBrowserRouter([
         path: "/add-org",
         element: <AddOrg />,
         action: createInstituteAction,
+        loader: requireAuthLoader,
+      },
+      {
+        path: "/add-course",
+        element: <AddCourse />,
+        action: createCourseAction,
+        loader: requireAuthLoader,
+      },
+      {
+        path: "/users",
+        element: <Users />,
         loader: requireAuthLoader,
       },
     ],

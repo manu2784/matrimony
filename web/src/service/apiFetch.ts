@@ -57,7 +57,7 @@ export async function apiFetch(
 
   const newToken = getAccessToken();
 
-  return fetch(input, {
+  return fetch(url, {
     ...init,
     headers: {
       ...(init?.headers || {}),
