@@ -12,6 +12,11 @@ module.exports = function optionalAuthentication(req, res, next) {
     token = authHeader.split(" ")[1];
   } else if (typeof accessTokenHeader === "string" && accessTokenHeader) {
     token = accessTokenHeader;
+  } else if (
+    typeof req.cookies?.accessToken === "string" &&
+    req.cookies.accessToken
+  ) {
+    token = req.cookies.accessToken;
   }
 
   if (!token) {

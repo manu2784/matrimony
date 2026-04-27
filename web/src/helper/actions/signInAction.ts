@@ -1,6 +1,9 @@
 import type { ActionFunctionArgs } from "react-router-dom";
 import { redirect } from "react-router";
-import { setAccessToken } from "../../service/apiFetch";
+import {
+  readAccessTokenResponse,
+  setAccessToken,
+} from "../../service/apiFetch";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export async function signInAction({ request }: ActionFunctionArgs) {
@@ -22,16 +25,23 @@ export async function signInAction({ request }: ActionFunctionArgs) {
       },
       body: JSON.stringify(payload),
     });
-    const token = await response.text();
-    if (response.status == 200 && token) {
-      setAccessToken(token);
+    if (response.status === 200) {
+      const token = await readAccessTokenResponse(response);
+
+      if (token) {
+        setAccessToken(token);
+      }
+
       throw redirect("/super-admin-dashboard");
     }
-    if (response.status == 403) {
+
+    if (response.status === 403) {
       return { error: "Invalid email or password" };
     }
-    if (response.status == 400) {
-      return { error: response.text() };
+
+    if (response.status === 400) {
+      const errorText = await response.text();
+      return { error: errorText };
     }
   }
   return;

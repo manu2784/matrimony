@@ -14,17 +14,17 @@ export async function createInstituteAction({
 
   const name = data.get("name")?.toString().trim();
   const description = data.get("description")?.toString().trim();
-  const admin = data.get("admin")?.toString().trim();
+  const accountManager = data.get("accountManager")?.toString().trim();
   const isActiveValue = data.get("isActive")?.toString().trim();
 
-  if (!name || !admin) {
-    return { error: "Name and admin are required." };
+  if (!name || !accountManager) {
+    return { error: "Name and account manager are required." };
   }
 
   const payload = {
     name,
     description: description || undefined,
-    admin,
+    admin: accountManager,
     isActive: isActiveValue !== "false",
   };
 

@@ -14,7 +14,7 @@ import {
   treeViewCustomizations,
 } from "./theme/customizations";
 import { useAuth } from "../../store/context/useAuth";
-import { useNavigate, useLoaderData, Outlet } from "react-router-dom";
+import { useLoaderData, useNavigate, Outlet } from "react-router-dom";
 import { type User } from "../../types/authentication/authentication-types";
 
 const xThemeComponents = {
@@ -25,19 +25,22 @@ const xThemeComponents = {
 export default function DashboardLayout(props: {
   disableCustomTheme?: boolean;
 }) {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
+  const loaderUser = useLoaderData() as User;
   const navigate = useNavigate();
   const logUserOut = async () => {
     await logout();
     navigate("/sign-in");
   };
-  const loaderData = useLoaderData() as User;
+  const currentUser = user ?? loaderUser;
 
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu logUserOut={logUserOut} user={loaderData} />
+        {currentUser ? (
+          <SideMenu logUserOut={logUserOut} user={currentUser} />
+        ) : null}
         <AppNavbar />
         {/* Main content */}
         <Box

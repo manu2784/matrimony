@@ -9,6 +9,7 @@ import SelectContent from "./SelectContent";
 import MenuContent from "./MenuContent";
 import CardAlert from "./CardAlert";
 import OptionsMenu from "./OptionsMenu";
+import type { User } from "../../../types/authentication/authentication-types";
 
 const drawerWidth = 240;
 
@@ -23,7 +24,13 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu({ logUserOut }: { logUserOut: () => Promise<void> }) {
+export default function SideMenu({
+  logUserOut,
+  user,
+}: {
+  logUserOut: () => Promise<void>;
+  user: User;
+}) {
   return (
     <Drawer
       variant="permanent"
@@ -67,7 +74,7 @@ export default function SideMenu({ logUserOut }: { logUserOut: () => Promise<voi
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
+          alt={user.firstName || "User Avatar"}
           src="/static/images/avatar/7.jpg"
           sx={{ width: 36, height: 36 }}
         />
@@ -76,10 +83,11 @@ export default function SideMenu({ logUserOut }: { logUserOut: () => Promise<voi
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Riley Carter
+            {[user.firstName, user.lastName].filter(Boolean).join(" ") ||
+              user.email}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            riley@email.com
+            {user.email}
           </Typography>
         </Box>
         <OptionsMenu logOut={logUserOut} />

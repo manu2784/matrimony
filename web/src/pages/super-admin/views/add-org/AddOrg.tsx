@@ -1,9 +1,11 @@
 import {
+  Autocomplete,
   Alert,
   Box,
   Button,
   Card,
   CardContent,
+  CircularProgress,
   FormControl,
   FormLabel,
   Grid,
@@ -12,18 +14,104 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Form, useActionData, useNavigation } from "react-router-dom";
 import type { CreateInstituteActionData } from "../../../../helper/actions/createInstituteAction";
+import { apiFetch } from "../../../../service/apiFetch";
 
 const statusOptions = [
   { value: "true", label: "Active" },
   { value: "false", label: "Inactive" },
 ];
 
+type UserOption = {
+  id: string;
+  label: string;
+};
+
 export default function AddOrg() {
   const actionData = useActionData() as CreateInstituteActionData | undefined;
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
+  const [accountManagers, setAccountManagers] = useState<UserOption[]>([]);
+  const [selectedAccountManager, setSelectedAccountManager] =
+    useState<UserOption | null>(null);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  const [usersError, setUsersError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadAccountManagers() {
+      try {
+        setIsLoadingUsers(true);
+        setUsersError(null);
+
+        const response = await apiFetch("/users?limit=100");
+
+        if (!response.ok) {
+          throw new Error("Unable to load account managers.");
+        }
+
+        const result = await response.json();
+        const options = Array.isArray(result?.data)
+          ? result.data
+              .filter(
+                (user: {
+                  _id?: string;
+                  firstName?: string;
+                  lastName?: string;
+                  email?: string;
+                  orgType?: string;
+                }) => user?._id && user?.email && user?.orgType === "provider",
+              )
+              .map(
+                (user: {
+                  _id: string;
+                  firstName?: string;
+                  lastName?: string;
+                  email: string;
+                }) => {
+                  const fullName = [user.firstName, user.lastName]
+                    .filter(Boolean)
+                    .join(" ")
+                    .trim();
+
+                  return {
+                    id: user._id,
+                    label: fullName
+                      ? `${fullName} (${user.email})`
+                      : user.email,
+                  };
+                },
+              )
+          : [];
+
+        if (isMounted) {
+          setAccountManagers(options);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setAccountManagers([]);
+          setUsersError(
+            error instanceof Error
+              ? error.message
+              : "Unable to load account managers.",
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoadingUsers(false);
+        }
+      }
+    }
+
+    loadAccountManagers();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <Card
@@ -54,6 +142,11 @@ export default function AddOrg() {
           )}
 
           <Form method="post" action="/add-org">
+            <input
+              type="hidden"
+              name="accountManager"
+              value={selectedAccountManager?.id ?? ""}
+            />
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth>
@@ -70,14 +163,51 @@ export default function AddOrg() {
 
               <Grid size={{ xs: 12, md: 6 }}>
                 <FormControl fullWidth>
-                  <FormLabel htmlFor="admin">Admin User ID</FormLabel>
-                  <TextField
-                    id="admin"
-                    name="admin"
-                    placeholder="MongoDB ObjectId"
-                    required
-                    fullWidth
-                    helperText="Enter the user id for the organization admin."
+                  <FormLabel htmlFor="accountManager">
+                    Account Manager
+                  </FormLabel>
+                  <Autocomplete
+                    id="accountManager"
+                    options={accountManagers}
+                    value={selectedAccountManager}
+                    onChange={(_, value) => {
+                      setSelectedAccountManager(value);
+                    }}
+                    getOptionLabel={(option) => option.label}
+                    isOptionEqualToValue={(option, value) =>
+                      option.id === value.id
+                    }
+                    loading={isLoadingUsers}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Select an account manager"
+                        required
+                        error={Boolean(usersError)}
+                        helperText={
+                          usersError ||
+                          "Only users with org type provider are shown."
+                        }
+                        slotProps={{
+                          input: {
+                            ...params.InputProps,
+                            endAdornment: (
+                              <>
+                                {isLoadingUsers ? (
+                                  <CircularProgress color="inherit" size={20} />
+                                ) : null}
+                                {params.InputProps.endAdornment}
+                              </>
+                            ),
+                          },
+                        }}
+                      />
+                    )}
+                    noOptionsText={
+                      isLoadingUsers
+                        ? "Loading account managers..."
+                        : "No provider users found"
+                    }
                   />
                 </FormControl>
               </Grid>

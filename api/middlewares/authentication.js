@@ -8,7 +8,8 @@ module.exports = function (req, res, next) {
     typeof authHeader === "string" && authHeader.startsWith("Bearer ")
       ? authHeader.split(" ")[1]
       : null;
-  const token = req.headers["x-access-token"] || bearerToken;
+  const token =
+    req.headers["x-access-token"] || bearerToken || req.cookies?.accessToken;
 
   if (!token) return res.status(401).send("Access denied. No token provided.");
   try {
@@ -16,6 +17,6 @@ module.exports = function (req, res, next) {
     req.user = decoded;
     next();
   } catch (ex) {
-    res.status(400).send("Invalid token.");
+    res.status(401).send("Invalid token.");
   }
 };

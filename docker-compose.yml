@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: ./api
+      target: prod
+    env_file:
+      - ./api/.env
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: ${MONGODB_URI}
+      DB_NAME: ${DB_NAME:-matrimony-dev-db}
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./web
+      target: prod
+      args:
+        VITE_API_BASE_URL: ""
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    restart: unless-stopped

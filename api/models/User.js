@@ -46,9 +46,17 @@ UserSchema.methods.isActive = function () {
 };
 
 //custom method to generate authToken
-UserSchema.methods.generateAccessToken = function () {
+UserSchema.methods.generateAccessToken = function (authState = {}) {
   const token = jwt.sign(
-    { _id: this._id, permission: this.permission, orgs: this.orgs },
+    {
+      _id: this._id,
+      email: this.email,
+      orgType: authState.orgType ?? this.orgType ?? null,
+      roles: Array.isArray(authState.roles) ? authState.roles : [],
+      permissions: Array.isArray(authState.permissions)
+        ? authState.permissions
+        : [],
+    },
     process.env.myprivatekey,
     { expiresIn: process.env.access_token_expiry_time },
   );

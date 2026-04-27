@@ -1,10 +1,11 @@
 "use strict";
 const { User } = require("../../models/User");
 const logger = require("../../modules/logger");
+const { buildAuthState } = require("../../helpers/buildAuthState");
 
 module.exports = async function (req, res) {
-  const { _id } = req.body;
-  let match, user;
+  const { _id } = req.user || {};
+  let user;
 
   try {
     user = await User.findOne({ _id: _id }).select("-password");
@@ -18,8 +19,10 @@ module.exports = async function (req, res) {
   }
 
   if (!user) {
-    res.status(403).send("incorrect credentials");
+    res.status(404).send("user not found");
     return;
   }
-  res.json(user);
+
+  const authState = await buildAuthState(user);
+  res.json(authState);
 };

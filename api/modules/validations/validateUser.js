@@ -1,6 +1,7 @@
 "use strict";
 
 const Joi = require("joi");
+const { PERMISSION_ROLES } = require("../../models/Permission");
 
 // function to validate user
 function validateUser(user, props) {
@@ -19,6 +20,9 @@ function validateUser(user, props) {
     orgType: Joi.string().valid("provider", "tenant"),
     username: Joi.string().alphanum().min(3).max(30),
     phone: Joi.number(),
+    roles: Joi.array()
+      .items(Joi.string().valid(...PERMISSION_ROLES))
+      .min(1),
   };
 
   if (props && props.length > 0) {

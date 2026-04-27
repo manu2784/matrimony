@@ -17,6 +17,12 @@ var subscriptionsRouter = require("./routes/subscriptions");
 const { hostname } = require("os");
 
 var app = express();
+var corsOrigins = (
+  process.env.CORS_ORIGIN || "http://localhost:5173,http://localhost:8080"
+)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -24,7 +30,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: corsOrigins,
     credentials: true,
   }),
 );
