@@ -1,42 +1,13 @@
 "use strict";
 
-const mongoose = require("mongoose");
-const Payment = require("../../models/Payment");
+const {
+  PaymentServiceError,
+  createPaymentRecord,
+} = require("../../services/paymentService");
 
 exports.createPaymentController = async (req, res) => {
   try {
-    const { userId, courseId, amount, currency, paymentProvider, status } =
-      req.body;
-
-    if (!userId || amount === undefined) {
-      return res.status(400).json({
-        success: false,
-        message: "userId and amount are required",
-      });
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid userId format",
-      });
-    }
-
-    if (courseId !== undefined && !mongoose.Types.ObjectId.isValid(courseId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid courseId format",
-      });
-    }
-
-    const payment = await Payment.create({
-      userId,
-      courseId,
-      amount,
-      currency,
-      paymentProvider,
-      status,
-    });
+    const payment = await createPaymentRecord(req.body);
 
     return res.status(201).json({
       success: true,
@@ -44,6 +15,13 @@ exports.createPaymentController = async (req, res) => {
       data: payment,
     });
   } catch (error) {
+    if (error instanceof PaymentServiceError) {
+      return res.status(error.statusCode).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
     if (error.name === "ValidationError") {
       const errors = Object.values(error.errors).map((err) => err.message);
       return res.status(400).json({

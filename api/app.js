@@ -14,6 +14,7 @@ var enrollmentsRouter = require("./routes/enrollments");
 var instructorProfilesRouter = require("./routes/instructorProfiles");
 var paymentsRouter = require("./routes/payments");
 var subscriptionsRouter = require("./routes/subscriptions");
+var assetsRouter = require("./routes/assets");
 const { hostname } = require("os");
 
 var app = express();
@@ -44,6 +45,7 @@ app.use("/enrollments", enrollmentsRouter);
 app.use("/instructor-profiles", instructorProfilesRouter);
 app.use("/payments", paymentsRouter);
 app.use("/subscriptions", subscriptionsRouter);
+app.use("/assets", assetsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

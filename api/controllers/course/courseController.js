@@ -8,9 +8,14 @@ const {
   deletePermission,
   PermissionServiceError,
 } = require("../../services/permissionService");
+const {
+  AuthorizationServiceError,
+  prepareCourseCreationBody,
+} = require("../../services/authorizationService");
 
 export const createCourse = async (req, res) => {
   try {
+    const courseBody = await prepareCourseCreationBody(req.user?._id, req.body);
     const {
       title,
       description,
@@ -21,7 +26,7 @@ export const createCourse = async (req, res) => {
       modules,
       price,
       isActive,
-    } = req.body;
+    } = courseBody;
 
     // Validate required fields
     if (!title || !instituteId || !courseAdminId) {
@@ -121,7 +126,10 @@ export const createCourse = async (req, res) => {
       },
     });
   } catch (error) {
-    if (error instanceof PermissionServiceError) {
+    if (
+      error instanceof PermissionServiceError ||
+      error instanceof AuthorizationServiceError
+    ) {
       return res.status(error.statusCode).json({
         success: false,
         message: error.message,

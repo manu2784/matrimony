@@ -2,6 +2,7 @@
 
 var express = require("express");
 var router = express.Router();
+const authenticate = require("../middlewares/authentication");
 
 const {
   createPaymentController,
@@ -15,6 +16,8 @@ const {
 const {
   deletePaymentController,
 } = require("../controllers/payment/deletePaymentController");
+
+router.use(authenticate);
 
 router.get("/", getAllPaymentsController);
 router.post("/create", createPaymentController);

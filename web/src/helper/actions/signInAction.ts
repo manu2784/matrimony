@@ -1,9 +1,11 @@
 import type { ActionFunctionArgs } from "react-router-dom";
 import { redirect } from "react-router";
 import {
+  apiFetch,
   readAccessTokenResponse,
   setAccessToken,
 } from "../../service/apiFetch";
+import type { AuthState } from "../../types/authentication/authentication-types";
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 
 export async function signInAction({ request }: ActionFunctionArgs) {
@@ -32,7 +34,17 @@ export async function signInAction({ request }: ActionFunctionArgs) {
         setAccessToken(token);
       }
 
-      throw redirect("/super-admin-dashboard");
+      const authResponse = await apiFetch("/users/me");
+      if (!authResponse.ok) {
+        return { error: "Unable to load user profile" };
+      }
+
+      const authState = (await authResponse.json()) as AuthState;
+      const orgType = authState.orgType ?? authState.user?.orgType ?? null;
+
+      throw redirect(
+        orgType === "provider" ? "/provider-dashboard" : "/dashboard",
+      );
     }
 
     if (response.status === 403) {

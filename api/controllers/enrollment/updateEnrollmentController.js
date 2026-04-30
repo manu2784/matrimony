@@ -10,9 +10,11 @@ exports.updateEnrollmentController = async (req, res) => {
       studentId,
       courseId,
       instituteId,
+      enrolledBy,
       enrolledAt,
       status,
       progress,
+      feePaid,
     } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -22,7 +24,7 @@ exports.updateEnrollmentController = async (req, res) => {
       });
     }
 
-    const idFields = { studentId, courseId, instituteId };
+    const idFields = { studentId, courseId, instituteId, enrolledBy };
     for (const [field, value] of Object.entries(idFields)) {
       if (value !== undefined && !mongoose.Types.ObjectId.isValid(value)) {
         return res.status(400).json({
@@ -36,9 +38,11 @@ exports.updateEnrollmentController = async (req, res) => {
     if (studentId !== undefined) updateData.studentId = studentId;
     if (courseId !== undefined) updateData.courseId = courseId;
     if (instituteId !== undefined) updateData.instituteId = instituteId;
+    if (enrolledBy !== undefined) updateData.enrolledBy = enrolledBy;
     if (enrolledAt !== undefined) updateData.enrolledAt = enrolledAt;
     if (status !== undefined) updateData.status = status;
     if (progress !== undefined) updateData.progress = progress;
+    if (feePaid !== undefined) updateData.feePaid = feePaid;
 
     const enrollment = await Enrollment.findByIdAndUpdate(id, updateData, {
       new: true,
@@ -46,7 +50,8 @@ exports.updateEnrollmentController = async (req, res) => {
     })
       .populate("studentId", "firstName lastName email")
       .populate("courseId", "title")
-      .populate("instituteId", "name");
+      .populate("instituteId", "name")
+      .populate("enrolledBy", "firstName lastName email");
 
     if (!enrollment) {
       return res.status(404).json({

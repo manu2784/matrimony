@@ -13,6 +13,10 @@ const paymentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
     },
+    instituteId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Institute",
+    },
 
     amount: {
       type: Number,
@@ -22,6 +26,12 @@ const paymentSchema = new mongoose.Schema(
     currency: {
       type: String,
       default: "USD",
+    },
+
+    paymentType: {
+      type: String,
+      enum: ["enrollment", "subscription", "onboarding"],
+      required: true,
     },
 
     paymentProvider: {

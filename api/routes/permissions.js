@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-// router.use(authenticate);
+router.use(authenticate);
 
 router.get("/", listPermissionsController);
 router.get("/:id", getPermissionController);

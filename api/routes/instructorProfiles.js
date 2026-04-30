@@ -2,6 +2,7 @@
 
 var express = require("express");
 var router = express.Router();
+const authenticate = require("../middlewares/authentication");
 
 const {
   createInstructorProfileController,
@@ -15,6 +16,8 @@ const {
 const {
   deleteInstructorProfileController,
 } = require("../controllers/instructorProfile/deleteInstructorProfileController");
+
+router.use(authenticate);
 
 router.get("/", getAllInstructorProfilesController);
 router.post("/create", createInstructorProfileController);

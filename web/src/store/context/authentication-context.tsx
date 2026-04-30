@@ -105,12 +105,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     );
   }
 
+  const orgType = auth?.orgType ?? auth?.user?.orgType ?? null;
+
   return (
     <AuthContext.Provider
       value={{
         user,
         auth,
-        orgType: auth?.orgType ?? null,
+        orgType,
         roles: auth?.roles ?? [],
         permissions: auth?.permissions ?? [],
         loading,

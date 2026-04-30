@@ -73,10 +73,12 @@ function validateRoleAndScope(role, scopeType) {
     throw new PermissionServiceError("Invalid scopeType", 400);
   }
 
-  const expectedScopeType = PERMISSION_ROLE_SCOPE_MAP[role];
-  if (expectedScopeType !== scopeType) {
+  const allowedScopeTypes = PERMISSION_ROLE_SCOPE_MAP[role] || [];
+  if (!allowedScopeTypes.includes(scopeType)) {
     throw new PermissionServiceError(
-      `Role "${role}" must use scopeType "${expectedScopeType}"`,
+      `Role "${role}" must use one of scopeTypes "${allowedScopeTypes.join(
+        ", ",
+      )}"`,
       400,
     );
   }
@@ -122,6 +124,27 @@ async function canPermissionManageTarget(
 ) {
   const actingRank = ROLE_RANK[actingPermission.role] || 0;
   const targetRank = ROLE_RANK[targetRole] || 0;
+
+  if (
+    actingPermission.role === "orgSuperAdmin" &&
+    targetRole === "orgSuperAdmin" &&
+    actingPermission.scopeType === "org" &&
+    targetScopeType === "org" &&
+    areObjectIdsEqual(actingPermission.scopeId, targetScopeId)
+  ) {
+    return true;
+  }
+
+  if (
+    actingPermission.role === "courseAdmin" &&
+    targetRole === "courseAdmin" &&
+    actingPermission.scopeType === "org" &&
+    targetScopeType === "course"
+  ) {
+    const instituteId = await resolveCourseInstituteId(targetScopeId);
+    return areObjectIdsEqual(actingPermission.scopeId, instituteId);
+  }
+
   if (actingRank <= targetRank) {
     return false;
   }

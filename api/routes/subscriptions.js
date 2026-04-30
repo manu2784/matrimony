@@ -2,6 +2,7 @@
 
 var express = require("express");
 var router = express.Router();
+const authenticate = require("../middlewares/authentication");
 
 const {
   createSubscriptionController,
@@ -15,6 +16,8 @@ const {
 const {
   deleteSubscriptionController,
 } = require("../controllers/subscription/deleteSubscriptionController");
+
+router.use(authenticate);
 
 router.get("/", getAllSubscriptionsController);
 router.post("/create", createSubscriptionController);

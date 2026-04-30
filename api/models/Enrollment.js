@@ -21,6 +21,18 @@ const enrollmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    enrolledBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    feePaid: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
+
     enrolledAt: {
       type: Date,
       default: Date.now,

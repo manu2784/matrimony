@@ -41,6 +41,7 @@ exports.getAllEnrollmentsController = async (req, res) => {
         .populate("studentId", "firstName lastName email")
         .populate("courseId", "title")
         .populate("instituteId", "name")
+        .populate("enrolledBy", "firstName lastName email")
         .sort({ [sortBy]: sortOrder })
         .skip(skip)
         .limit(Number(limit)),

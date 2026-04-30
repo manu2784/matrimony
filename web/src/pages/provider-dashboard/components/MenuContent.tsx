@@ -16,7 +16,7 @@ import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const mainListItems = [
-  { text: "Home", icon: <HomeRoundedIcon />, to: "/super-admin-dashboard" },
+  { text: "Home", icon: <HomeRoundedIcon />, to: "/provider-dashboard" },
   { text: "Add User", icon: <PersonAddAltIcon />, to: "/add-user" },
   { text: "Users", icon: <PeopleRoundedIcon />, to: "/users" },
   { text: "Add Org", icon: <BusinessRoundedIcon />, to: "/add-org" },
@@ -24,12 +24,12 @@ const mainListItems = [
   {
     text: "Clients",
     icon: <PeopleRoundedIcon />,
-    to: "/super-admin-dashboard",
+    to: "/provider-dashboard",
   },
   {
     text: "Tasks",
     icon: <AssignmentRoundedIcon />,
-    to: "/super-admin-dashboard",
+    to: "/provider-dashboard",
   },
 ];
 

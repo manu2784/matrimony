@@ -14,6 +14,7 @@ import {
   treeViewCustomizations,
 } from "./theme/customizations";
 import { useAuth } from "../../store/context/useAuth";
+import { useEffect } from "react";
 import { useLoaderData, useNavigate, Outlet } from "react-router-dom";
 import { type User } from "../../types/authentication/authentication-types";
 
@@ -22,10 +23,10 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function DashboardLayout(props: {
+export default function ProviderDashboardLayout(props: {
   disableCustomTheme?: boolean;
 }) {
-  const { logout, user } = useAuth();
+  const { auth, logout, user } = useAuth();
   const loaderUser = useLoaderData() as User;
   const navigate = useNavigate();
   const logUserOut = async () => {
@@ -33,6 +34,17 @@ export default function DashboardLayout(props: {
     navigate("/sign-in");
   };
   const currentUser = user ?? loaderUser;
+  const orgType = auth?.orgType ?? currentUser?.orgType ?? null;
+
+  useEffect(() => {
+    if (orgType !== "provider") {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [navigate, orgType]);
+
+  if (orgType !== "provider") {
+    return null;
+  }
 
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>

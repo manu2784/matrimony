@@ -17,14 +17,21 @@ const ROLES = [
 const SCOPE_TYPES = ["global", "org", "course"];
 
 const ROLE_SCOPE_MAP = {
-  superAdmin: "global",
-  accountAdmin: "org",
-  accountManager: "org",
-  orgSuperAdmin: "org",
-  courseAdmin: "course",
-  courseManager: "course",
-  courseViewer: "course",
+  superAdmin: ["global"],
+  accountAdmin: ["org"],
+  accountManager: ["org"],
+  orgSuperAdmin: ["org"],
+  courseAdmin: ["org", "course"],
+  courseManager: ["org", "course"],
+  courseViewer: ["org", "course"],
 };
+
+const DEFAULT_ROLE_SCOPE_MAP = Object.fromEntries(
+  Object.entries(ROLE_SCOPE_MAP).map(([role, scopeTypes]) => [
+    role,
+    scopeTypes[0],
+  ]),
+);
 
 const permissionSchema = new Schema(
   {
@@ -72,12 +79,14 @@ permissionSchema.index(
 );
 
 permissionSchema.pre("validate", function validatePermission(next) {
-  const expectedScope = ROLE_SCOPE_MAP[this.role];
+  const allowedScopes = ROLE_SCOPE_MAP[this.role] || [];
 
-  if (this.scopeType !== expectedScope) {
+  if (!allowedScopes.includes(this.scopeType)) {
     return next(
       new Error(
-        `Role "${this.role}" must have scopeType "${expectedScope}", got "${this.scopeType}"`,
+        `Role "${this.role}" must have one of scopeTypes "${allowedScopes.join(
+          ", ",
+        )}", got "${this.scopeType}"`,
       ),
     );
   }
@@ -148,4 +157,5 @@ module.exports = {
   PERMISSION_ROLES: ROLES,
   PERMISSION_SCOPE_TYPES: SCOPE_TYPES,
   PERMISSION_ROLE_SCOPE_MAP: ROLE_SCOPE_MAP,
+  DEFAULT_PERMISSION_ROLE_SCOPE_MAP: DEFAULT_ROLE_SCOPE_MAP,
 };
