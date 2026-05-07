@@ -13,6 +13,8 @@ exports.createAssetController = async (req, res) => {
       type,
       instituteId,
       courseId,
+      moduleId,
+      lessonId,
       s3,
       originalFileName,
       mimeType,
@@ -44,6 +46,12 @@ exports.createAssetController = async (req, res) => {
     if (courseId) {
       objectIdFields.courseId = courseId;
     }
+    if (moduleId) {
+      objectIdFields.moduleId = moduleId;
+    }
+    if (lessonId) {
+      objectIdFields.lessonId = lessonId;
+    }
 
     for (const [field, value] of Object.entries(objectIdFields)) {
       if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -52,6 +60,20 @@ exports.createAssetController = async (req, res) => {
           message: `Invalid ${field} format`,
         });
       }
+    }
+
+    if ((moduleId || lessonId) && !courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "courseId is required when moduleId or lessonId is provided",
+      });
+    }
+
+    if (lessonId && !moduleId) {
+      return res.status(400).json({
+        success: false,
+        message: "moduleId is required when lessonId is provided",
+      });
     }
 
     const assetType = type || req.assetFile?.inferredType;
@@ -73,6 +95,8 @@ exports.createAssetController = async (req, res) => {
       type: assetType,
       instituteId,
       courseId: courseId || null,
+      moduleId: moduleId || null,
+      lessonId: lessonId || null,
       ownerId: req.user._id,
       s3: {
         ...s3,
@@ -98,6 +122,8 @@ exports.createAssetController = async (req, res) => {
       userId: req.user?._id || null,
       instituteId: req.body?.instituteId || null,
       courseId: req.body?.courseId || null,
+      moduleId: req.body?.moduleId || null,
+      lessonId: req.body?.lessonId || null,
     });
 
     if (error.name === "ValidationError") {

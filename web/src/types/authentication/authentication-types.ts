@@ -34,7 +34,7 @@ export interface AuthContextType {
   roles: string[];
   permissions: AuthPermission[];
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthState>;
   logout: () => Promise<void>;
   getAccessToken: () => string | null;
   hasRole: (role: string) => boolean;

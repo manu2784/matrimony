@@ -1,5 +1,6 @@
 services:
   api:
+    image: protutor-ecs-dev:latest
     build:
       context: ./api
       target: prod

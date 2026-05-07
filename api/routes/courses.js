@@ -10,8 +10,8 @@ router.use(authenticate);
 
 router.post("/create", courseController.createCourse);
 router.get("/", getCourseController.getCourses);
-// router.get("/:id", courseController.getCourseById);
-// router.put("/update/:id", courseController.updateCourse);
-// router.delete("/delete/:id", courseController.deleteCourse);
+router.get("/:id", courseController.getCourseById);
+router.put("/update/:id", courseController.updateCourse);
+router.delete("/delete/:id", courseController.deleteCourse);
 
 module.exports = router;

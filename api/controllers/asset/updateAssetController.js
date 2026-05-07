@@ -13,6 +13,8 @@ exports.updateAssetController = async (req, res) => {
       type,
       instituteId,
       courseId,
+      moduleId,
+      lessonId,
       s3,
       originalFileName,
       mimeType,
@@ -27,7 +29,7 @@ exports.updateAssetController = async (req, res) => {
       });
     }
 
-    const objectIdFields = { instituteId, courseId };
+    const objectIdFields = { instituteId, courseId, moduleId, lessonId };
     for (const [field, value] of Object.entries(objectIdFields)) {
       if (value && !mongoose.Types.ObjectId.isValid(value)) {
         return res.status(400).json({
@@ -35,6 +37,20 @@ exports.updateAssetController = async (req, res) => {
           message: `Invalid ${field} format`,
         });
       }
+    }
+
+    if ((moduleId || lessonId) && courseId !== undefined && !courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "courseId is required when moduleId or lessonId is provided",
+      });
+    }
+
+    if (lessonId && moduleId !== undefined && !moduleId) {
+      return res.status(400).json({
+        success: false,
+        message: "moduleId is required when lessonId is provided",
+      });
     }
 
     if (
@@ -55,6 +71,8 @@ exports.updateAssetController = async (req, res) => {
     if (type !== undefined) updateData.type = type;
     if (instituteId !== undefined) updateData.instituteId = instituteId;
     if (courseId !== undefined) updateData.courseId = courseId || null;
+    if (moduleId !== undefined) updateData.moduleId = moduleId || null;
+    if (lessonId !== undefined) updateData.lessonId = lessonId || null;
     if (s3 !== undefined) updateData.s3 = s3;
     if (originalFileName !== undefined)
       updateData.originalFileName = originalFileName;

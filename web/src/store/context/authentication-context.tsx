@@ -52,16 +52,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       body: JSON.stringify({ email, password }),
     });
 
-    if (!res.ok) throw new Error("Login failed");
+    if (!res.ok) {
+      if (res.status === 403) {
+        throw new Error("Invalid email or password");
+      }
+
+      if (res.status === 400) {
+        const errorText = await res.text();
+        throw new Error(errorText || "Invalid sign in request");
+      }
+
+      throw new Error("Unable to sign in. Please try again.");
+    }
 
     const token = await readAccessTokenResponse(res);
+
+    if (!token) {
+      throw new Error("Unable to sign in. Please try again.");
+    }
 
     setAccessToken(token);
 
     const me = await apiFetch("/users/me");
-    if (!me.ok) throw new Error("Unable to load user");
+    if (!me.ok) throw new Error("Unable to load user profile");
     const authData = (await me.json()) as AuthState;
     applyAuthState(authData);
+    return authData;
   }
 
   async function logout() {

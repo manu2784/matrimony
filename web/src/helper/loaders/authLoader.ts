@@ -101,7 +101,8 @@ export async function requireOrgCourseCreatorLoader() {
 
     if (
       !hasRole(authState, "orgSuperAdmin") &&
-      !hasRole(authState, "courseAdmin")
+      !hasRole(authState, "courseAdmin") &&
+      !hasRole(authState, "courseManager")
     ) {
       throw redirect("/dashboard");
     }
@@ -113,6 +114,31 @@ export async function requireOrgCourseCreatorLoader() {
     }
 
     //console.error("Course creator authorization check failed:", e);
+    throw redirect("/sign-in");
+  }
+}
+
+export async function requireOrgEnrollmentManagerLoader() {
+  try {
+    const authState = await loadAuthState();
+
+    if (getOrgType(authState) === "provider") {
+      throw redirect("/provider-dashboard");
+    }
+
+    if (
+      !hasRole(authState, "orgSuperAdmin") &&
+      !hasRole(authState, "courseAdmin")
+    ) {
+      throw redirect("/dashboard");
+    }
+
+    return authState.user;
+  } catch (e) {
+    if (e instanceof Response) {
+      throw e;
+    }
+
     throw redirect("/sign-in");
   }
 }

@@ -10,14 +10,12 @@ import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, to: "/provider-dashboard" },
-  { text: "Add User", icon: <PersonAddAltIcon />, to: "/add-user" },
   { text: "Users", icon: <PeopleRoundedIcon />, to: "/users" },
   { text: "Add Org", icon: <BusinessRoundedIcon />, to: "/add-org" },
   { text: "Add Course", icon: <SchoolRoundedIcon />, to: "/add-course" },

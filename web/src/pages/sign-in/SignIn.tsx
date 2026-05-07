@@ -17,7 +17,8 @@ import {
   Alert,
 } from "@mui/material";
 import ForgotPassword from "./components/ForgotPassword";
-import { Form, useActionData, useSubmit } from "react-router";
+import { Form, useNavigate } from "react-router";
+import { useAuth } from "../../store/context/useAuth";
 // import AppTheme from '../shared-theme/AppTheme';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import {
@@ -74,10 +75,11 @@ export default function SignIn() {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+  const [submitError, setSubmitError] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const actionData = useActionData() as { error?: string } | undefined;
-  const submit = useSubmit();
-  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -87,28 +89,14 @@ export default function SignIn() {
     setOpen(false);
   };
 
-  const handleSubmit = React.useCallback((event: React.FormEvent<HTMLFormElement>): void => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget as HTMLFormElement);
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = setTimeout(() => {
-
-      submit(data, { method: "post", action: "/sign-in" });
-
-      return;
-
-    }, 1000);
-  }, [submit]);
-
-  const validateInputs = () => {
-    const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;
+  const validateInputs = React.useCallback((form: HTMLFormElement) => {
+    const data = new FormData(form);
+    const email = data.get("email")?.toString().trim() ?? "";
+    const password = data.get("password")?.toString() ?? "";
 
     let isValid = true;
 
-    if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
+    if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
       isValid = false;
@@ -117,7 +105,7 @@ export default function SignIn() {
       setEmailErrorMessage("");
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password || password.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
       isValid = false;
@@ -126,8 +114,47 @@ export default function SignIn() {
       setPasswordErrorMessage("");
     }
 
-    return isValid;
-  };
+    return isValid ? { email, password } : null;
+  }, []);
+
+  const handleSubmit = React.useCallback(
+    async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
+      event.preventDefault();
+
+      if (isSubmitting) {
+        return;
+      }
+
+      setSubmitError("");
+      const credentials = validateInputs(event.currentTarget);
+      if (!credentials) {
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      try {
+        const authState = await login(credentials.email, credentials.password);
+        const orgType = authState.orgType ?? authState.user?.orgType ?? null;
+
+        navigate(
+          orgType === "provider" ? "/provider-dashboard" : "/dashboard",
+          {
+            replace: true,
+          },
+        );
+      } catch (error) {
+        setSubmitError(
+          error instanceof Error
+            ? error.message
+            : "Unable to sign in. Please try again.",
+        );
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [isSubmitting, login, navigate, validateInputs],
+  );
 
   return (
     <>
@@ -153,10 +180,10 @@ export default function SignIn() {
           >
             Sign in
           </Typography>
-          {actionData && actionData.error && (
+          {submitError && (
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <Alert severity="error" sx={{ width: "100%" }}>
-                {actionData?.error}
+                {submitError}
               </Alert>
             </Box>
           )}
@@ -212,9 +239,9 @@ export default function SignIn() {
                 fullWidth
                 variant="contained"
                 type="submit"
-                onClick={validateInputs}
+                disabled={isSubmitting}
               >
-                Sign in
+                {isSubmitting ? "Signing in..." : "Sign in"}
               </Button>
               <Link
                 component="button"
@@ -257,7 +284,7 @@ export default function SignIn() {
             </Typography>
           </Box>
         </Card>
-      </SignInContainer >
+      </SignInContainer>
     </>
   );
 }

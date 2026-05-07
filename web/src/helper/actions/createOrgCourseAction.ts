@@ -15,6 +15,14 @@ export async function createOrgCourseAction({
   const description = data.get("description")?.toString().trim();
   const durationWeeksValue = data.get("durationWeeks")?.toString().trim();
   const courseAdminId = data.get("courseAdminId")?.toString().trim();
+  const moduleTitles = Array.from(
+    new Set(
+      data
+        .getAll("modules")
+        .map((moduleTitle) => moduleTitle.toString().trim())
+        .filter(Boolean),
+    ),
+  );
 
   if (!title || !courseAdminId) {
     return { error: "Please complete all required fields before submitting." };
@@ -42,6 +50,9 @@ export async function createOrgCourseAction({
       description: description || undefined,
       durationWeeks,
       courseAdminId,
+      modules: moduleTitles.length
+        ? moduleTitles.map((moduleTitle) => ({ title: moduleTitle }))
+        : undefined,
     }),
   });
 

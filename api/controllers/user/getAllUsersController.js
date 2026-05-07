@@ -1,6 +1,7 @@
 "use strict";
 
 const mongoose = require("mongoose");
+const { Permission } = require("../../models/Permission");
 const { User } = require("../../models/User");
 
 exports.getAllUsersController = async (req, res) => {
@@ -42,10 +43,34 @@ exports.getAllUsersController = async (req, res) => {
         .limit(Number(limit)),
       User.countDocuments(filter),
     ]);
+    const userIds = users.map((user) => user._id);
+    const permissions = await Permission.find({
+      userId: { $in: userIds },
+      $or: [{ expiresAt: null }, { expiresAt: { $gt: new Date() } }],
+    }).select("userId role scopeType scopeId");
+
+    const permissionsByUserId = permissions.reduce((acc, permission) => {
+      const userId = String(permission.userId);
+      if (!acc[userId]) acc[userId] = [];
+      acc[userId].push(permission);
+      return acc;
+    }, {});
+
+    const usersWithPermissions = users.map((user) => {
+      const userObject = user.toObject();
+      const userPermissions = permissionsByUserId[String(user._id)] || [];
+      return {
+        ...userObject,
+        roles: [
+          ...new Set(userPermissions.map((permission) => permission.role)),
+        ],
+        permissions: userPermissions,
+      };
+    });
 
     return res.status(200).json({
       success: true,
-      data: users,
+      data: usersWithPermissions,
       pagination: {
         total,
         page: Number(page),

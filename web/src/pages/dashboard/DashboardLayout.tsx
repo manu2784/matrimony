@@ -41,7 +41,7 @@ export default function DashboardLayout(props: {
         {currentUser ? (
           <SideMenu logUserOut={logUserOut} user={currentUser} />
         ) : null}
-        <AppNavbar />
+        <AppNavbar logUserOut={logUserOut} user={currentUser} />
         {/* Main content */}
         <Box
           component="main"

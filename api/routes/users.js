@@ -25,6 +25,6 @@ router.delete("/delete", deleteUserController);
 // must be authenticated
 router.use(authenticate);
 router.get("/", getAllUsersController);
-router.put("/update", authorize("user"), updateUserController);
+router.put("/update", updateUserController);
 router.get("/me", authorize("user"), userController);
 module.exports = router;

@@ -2,7 +2,7 @@
 
 const mongoose = require("mongoose");
 
-const ASSET_TYPES = ["video", "image", "pdf", "slide"];
+const ASSET_TYPES = ["video", "image", "pdf", "slide", "document", "other"];
 
 const assetSchema = new mongoose.Schema(
   {
@@ -33,6 +33,18 @@ const assetSchema = new mongoose.Schema(
     courseId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
+      default: null,
+      index: true,
+    },
+
+    moduleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: null,
+      index: true,
+    },
+
+    lessonId: {
+      type: mongoose.Schema.Types.ObjectId,
       default: null,
       index: true,
     },
@@ -90,6 +102,7 @@ const assetSchema = new mongoose.Schema(
 );
 
 assetSchema.index({ instituteId: 1, courseId: 1, type: 1 });
+assetSchema.index({ instituteId: 1, courseId: 1, moduleId: 1, lessonId: 1 });
 assetSchema.index({ "s3.bucket": 1, "s3.key": 1 }, { unique: true });
 
 const Asset = mongoose.model("Asset", assetSchema);

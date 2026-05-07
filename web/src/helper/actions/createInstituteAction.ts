@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs } from "react-router-dom";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
+import { apiFetch } from "../../service/apiFetch";
 
 export type CreateInstituteActionData = {
   error?: string;
@@ -28,7 +27,7 @@ export async function createInstituteAction({
     isActive: isActiveValue !== "false",
   };
 
-  const response = await fetch(`${API_BASE_URL}/institutes/create`, {
+  const response = await apiFetch("/institutes/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

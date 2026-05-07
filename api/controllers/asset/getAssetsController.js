@@ -13,6 +13,8 @@ exports.getAssetsController = async (req, res) => {
       status,
       instituteId,
       courseId,
+      moduleId,
+      lessonId,
       ownerId,
       search,
       sortBy = "createdAt",
@@ -21,7 +23,13 @@ exports.getAssetsController = async (req, res) => {
 
     const filter = {};
 
-    const objectIdFilters = { instituteId, courseId, ownerId };
+    const objectIdFilters = {
+      instituteId,
+      courseId,
+      moduleId,
+      lessonId,
+      ownerId,
+    };
     for (const [field, value] of Object.entries(objectIdFilters)) {
       if (!value) continue;
       if (!mongoose.Types.ObjectId.isValid(value)) {

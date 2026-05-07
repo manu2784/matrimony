@@ -15,7 +15,11 @@ const MenuItem = styled(MuiMenuItem)({
   margin: "2px 0",
 });
 
-export default function OptionsMenu({ logOut }: { logOut: () => Promise<void> }) {
+export default function OptionsMenu({
+  logOut,
+}: {
+  logOut: () => Promise<void>;
+}) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -60,7 +64,10 @@ export default function OptionsMenu({ logOut }: { logOut: () => Promise<void> })
         <MenuItem onClick={handleClose}>Settings</MenuItem>
         <Divider />
         <MenuItem
-          onClick={handleClose}
+          onClick={() => {
+            handleClose();
+            logOut();
+          }}
           sx={{
             [`& .${listItemIconClasses.root}`]: {
               ml: "auto",
@@ -70,7 +77,7 @@ export default function OptionsMenu({ logOut }: { logOut: () => Promise<void> })
         >
           <ListItemText>Logout</ListItemText>
           <ListItemIcon>
-            <LogoutRoundedIcon onClick={logOut} fontSize="small" />
+            <LogoutRoundedIcon fontSize="small" />
           </ListItemIcon>
         </MenuItem>
       </Menu>

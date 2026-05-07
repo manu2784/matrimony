@@ -5,7 +5,6 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const {
   createPermission,
-  deletePermission,
   PermissionServiceError,
 } = require("../../services/permissionService");
 const {
@@ -146,6 +145,183 @@ export const createCourse = async (req, res) => {
       });
     }
 
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+function validateCourseId(id) {
+  return mongoose.Types.ObjectId.isValid(id);
+}
+
+function buildCourseUpdateData(body) {
+  const updateData = {};
+
+  if (body.title !== undefined) updateData.title = body.title;
+  if (body.description !== undefined) updateData.description = body.description;
+  if (body.durationWeeks !== undefined)
+    updateData.durationWeeks = body.durationWeeks;
+  if (body.instructors !== undefined) updateData.instructors = body.instructors;
+  if (body.modules !== undefined) updateData.modules = body.modules;
+  if (body.price !== undefined) updateData.price = body.price;
+  if (body.isActive !== undefined) updateData.isActive = body.isActive;
+
+  return updateData;
+}
+
+function validateCoursePayload({ title, instructors, modules }) {
+  if (title !== undefined && !String(title).trim()) {
+    return "Course title cannot be empty";
+  }
+
+  if (instructors && Array.isArray(instructors)) {
+    const invalidInstructors = instructors.filter(
+      (id) => !mongoose.Types.ObjectId.isValid(id),
+    );
+    if (invalidInstructors.length > 0) {
+      return `Invalid instructor IDs: ${invalidInstructors.join(", ")}`;
+    }
+  }
+
+  if (modules && Array.isArray(modules)) {
+    for (const mod of modules) {
+      if (!mod.title) {
+        return "Each module must have a title";
+      }
+      if (mod.lessons && Array.isArray(mod.lessons)) {
+        for (const lesson of mod.lessons) {
+          if (!lesson.title) {
+            return "Each lesson must have a title";
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+}
+
+export const getCourseById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!validateCourseId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid course id format",
+      });
+    }
+
+    const course = await Course.findById(id);
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data: course,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const updateCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!validateCourseId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid course id format",
+      });
+    }
+
+    const validationMessage = validateCoursePayload(req.body);
+
+    if (validationMessage) {
+      return res.status(400).json({
+        success: false,
+        message: validationMessage,
+      });
+    }
+
+    const course = await Course.findByIdAndUpdate(
+      id,
+      buildCourseUpdateData(req.body),
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Course updated successfully",
+      data: course,
+    });
+  } catch (error) {
+    if (error.name === "ValidationError") {
+      const errors = Object.values(error.errors).map((e) => e.message);
+      return res.status(400).json({
+        success: false,
+        message: "Validation failed",
+        errors,
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+export const deleteCourse = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!validateCourseId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid course id format",
+      });
+    }
+
+    const course = await Course.findByIdAndDelete(id);
+
+    if (!course) {
+      return res.status(404).json({
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Course deleted successfully",
+      data: course,
+    });
+  } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Internal server error",

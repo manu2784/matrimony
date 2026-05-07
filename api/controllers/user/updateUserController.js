@@ -1,23 +1,100 @@
 "use strict";
 
 const { User } = require("../../models/User");
+const { Permission } = require("../../models/Permission");
 const validateUser = require("../../modules/validations/validateUser");
 const bcrypt = require("bcrypt");
+const {
+  createPermission,
+  PermissionServiceError,
+} = require("../../services/permissionService");
+const {
+  DEFAULT_PERMISSION_ROLE_SCOPE_MAP,
+} = require("../../models/Permission");
+
+function buildPermissionPayloadsForUser(userId, body) {
+  const roles = Array.isArray(body.roles)
+    ? body.roles.map((role) => String(role).trim()).filter(Boolean)
+    : [];
+
+  return roles.map((role) => {
+    let scopeType = DEFAULT_PERMISSION_ROLE_SCOPE_MAP[role];
+
+    if (!scopeType) {
+      throw new PermissionServiceError(`Unsupported role "${role}"`, 400);
+    }
+
+    if (body.courseId && role.startsWith("course")) {
+      scopeType = "course";
+    }
+
+    if (scopeType === "global") {
+      return {
+        userId,
+        role,
+        scopeType,
+        scopeId: null,
+      };
+    }
+
+    if (scopeType === "org") {
+      if (!body.orgId) {
+        throw new PermissionServiceError(
+          `Role "${role}" requires an orgId scope`,
+          400,
+        );
+      }
+
+      return {
+        userId,
+        role,
+        scopeType,
+        scopeId: body.orgId,
+      };
+    }
+
+    if (!body.courseId) {
+      return {
+        userId,
+        role,
+        scopeType: "org",
+        scopeId: body.orgId,
+      };
+    }
+
+    return {
+      userId,
+      role,
+      scopeType,
+      scopeId: body.courseId,
+    };
+  });
+}
 
 exports.updateUserController = async (req, res) => {
-  const { error } = validateUser(req.body, Object.keys(req.body));
+  const requestBody = { ...req.body };
+  const submittedRoles = Array.isArray(requestBody.roles)
+    ? requestBody.roles
+    : undefined;
+  delete requestBody.roles;
+  delete requestBody.courseId;
+
+  const fieldsToValidate = Object.keys(requestBody).filter(
+    (field) => !(field === "password" && !requestBody.password),
+  );
+  const { error } = validateUser(requestBody, fieldsToValidate);
   if (error) return res.status(400).send(error.details[0].message);
 
   //fields not applicable to updates
-  delete req.body.accountManagerOrgs;
-  delete req.body.adminTeams;
-  delete req.body.permission;
-  delete req.body.org;
+  delete requestBody.accountManagerOrgs;
+  delete requestBody.adminTeams;
+  delete requestBody.permission;
+  delete requestBody.org;
 
   // find an existing user
   let existingUser;
   try {
-    existingUser = await User.findById(req.body._id);
+    existingUser = await User.findById(requestBody._id);
     //  existingUser= existingUser.toObject();
   } catch (e) {
     console.log(e);
@@ -29,11 +106,40 @@ exports.updateUserController = async (req, res) => {
     let key = props[i];
     if (key === "_id") continue;
 
-    if (req.body[key]) existingUser[key] = req.body[key];
+    if (requestBody[key]) existingUser[key] = requestBody[key];
   }
   delete existingUser.__v;
-  if (req.body.password)
+  if (requestBody.password)
     existingUser.password = await bcrypt.hash(existingUser.password, 10);
 
-  res.send(await existingUser.save());
+  const savedUser = await existingUser.save();
+
+  if (submittedRoles) {
+    try {
+      const permissionPayloads = buildPermissionPayloadsForUser(savedUser._id, {
+        ...requestBody,
+        roles: submittedRoles,
+        orgId: requestBody.orgId || savedUser.orgId,
+      });
+
+      await Permission.deleteMany({ userId: savedUser._id });
+
+      for (const permissionPayload of permissionPayloads) {
+        // eslint-disable-next-line no-await-in-loop
+        await createPermission(permissionPayload, {
+          actingUserId: req.user?._id,
+        });
+      }
+    } catch (permissionError) {
+      if (permissionError instanceof PermissionServiceError) {
+        return res
+          .status(permissionError.statusCode)
+          .json({ error: permissionError.message });
+      }
+
+      throw permissionError;
+    }
+  }
+
+  res.send(savedUser);
 };

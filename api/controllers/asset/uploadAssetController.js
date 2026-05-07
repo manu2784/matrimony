@@ -53,7 +53,8 @@ function handleUploadError(res, error, context) {
 
 exports.uploadAssetController = async (req, res) => {
   try {
-    const { title, description, instituteId, courseId } = req.body;
+    const { title, description, instituteId, courseId, moduleId, lessonId } =
+      req.body;
 
     if (!title || !instituteId || !req.file) {
       return res.status(400).json({
@@ -70,6 +71,12 @@ exports.uploadAssetController = async (req, res) => {
     if (courseId) {
       objectIdFields.courseId = courseId;
     }
+    if (moduleId) {
+      objectIdFields.moduleId = moduleId;
+    }
+    if (lessonId) {
+      objectIdFields.lessonId = lessonId;
+    }
 
     for (const [field, value] of Object.entries(objectIdFields)) {
       if (!mongoose.Types.ObjectId.isValid(value)) {
@@ -78,6 +85,20 @@ exports.uploadAssetController = async (req, res) => {
           message: `Invalid ${field} format`,
         });
       }
+    }
+
+    if ((moduleId || lessonId) && !courseId) {
+      return res.status(400).json({
+        success: false,
+        message: "courseId is required when moduleId or lessonId is provided",
+      });
+    }
+
+    if (lessonId && !moduleId) {
+      return res.status(400).json({
+        success: false,
+        message: "moduleId is required when lessonId is provided",
+      });
     }
 
     const key = buildAssetKey({
@@ -99,6 +120,8 @@ exports.uploadAssetController = async (req, res) => {
       type: req.assetFile.inferredType,
       instituteId,
       courseId: courseId || null,
+      moduleId: moduleId || null,
+      lessonId: lessonId || null,
       ownerId: req.user._id,
       s3: {
         bucket: s3Config.bucket,
@@ -121,6 +144,8 @@ exports.uploadAssetController = async (req, res) => {
       userId: req.user?._id || null,
       instituteId: req.body?.instituteId || null,
       courseId: req.body?.courseId || null,
+      moduleId: req.body?.moduleId || null,
+      lessonId: req.body?.lessonId || null,
       fileName: req.file?.originalname || null,
     });
   }

@@ -5,13 +5,10 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
-import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 import PermMediaRoundedIcon from "@mui/icons-material/PermMediaRounded";
 import HowToRegRoundedIcon from "@mui/icons-material/HowToRegRounded";
@@ -20,9 +17,9 @@ import { useAuth } from "../../../store/context/useAuth";
 
 const mainListItems = [
   { text: "Home", icon: <HomeRoundedIcon />, to: "/dashboard" },
-  { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/dashboard" },
-  { text: "Clients", icon: <PeopleRoundedIcon />, to: "/dashboard" },
-  { text: "Tasks", icon: <AssignmentRoundedIcon />, to: "/dashboard" },
+  // { text: "Analytics", icon: <AnalyticsRoundedIcon />, to: "/dashboard" },
+  // { text: "Clients", icon: <PeopleRoundedIcon />, to: "/dashboard" },
+  // { text: "Tasks", icon: <AssignmentRoundedIcon />, to: "/dashboard" },
 ];
 
 const secondaryListItems = [
@@ -35,34 +32,43 @@ export default function MenuContent() {
   const location = useLocation();
   const { hasRole } = useAuth();
   const canCreateUsers = hasRole("orgSuperAdmin");
-  const canCreateCourses = hasRole("orgSuperAdmin") || hasRole("courseAdmin");
+  const canCreateCourses =
+    hasRole("orgSuperAdmin") ||
+    hasRole("courseAdmin") ||
+    hasRole("courseManager");
+  const canManageEnrollments =
+    hasRole("orgSuperAdmin") || hasRole("courseAdmin");
   const visibleMainListItems = [
     ...mainListItems,
     ...(canCreateUsers
       ? [
           {
-            text: "Add User",
-            icon: <PersonAddAltIcon />,
-            to: "/dashboard/add-user",
+            text: "Users",
+            icon: <PeopleRoundedIcon />,
+            to: "/dashboard/users",
           },
         ]
       : []),
     ...(canCreateCourses
       ? [
           {
-            text: "Add Course",
+            text: "Courses",
             icon: <SchoolRoundedIcon />,
-            to: "/dashboard/add-course",
+            to: "/dashboard/courses",
           },
           {
-            text: "Add Material",
+            text: "Course Material",
             icon: <PermMediaRoundedIcon />,
-            to: "/dashboard/add-course-material",
+            to: "/dashboard/course-material",
           },
+        ]
+      : []),
+    ...(canManageEnrollments
+      ? [
           {
-            text: "Add Enrollment",
+            text: "Enrollments",
             icon: <HowToRegRoundedIcon />,
-            to: "/dashboard/add-enrollment",
+            to: "/dashboard/enrollment",
           },
         ]
       : []),

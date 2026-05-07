@@ -14,6 +14,11 @@ const moduleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["Not Started", "In Progress", "Completed"],
+    default: "Not Started",
+  },
   lessons: [lessonSchema],
 });
 
