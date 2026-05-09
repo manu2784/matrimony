@@ -7,7 +7,13 @@ import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 
-export default function HighlightedCard() {
+type HighlightedCardProps = {
+  actionLabel?: string;
+};
+
+export default function HighlightedCard({
+  actionLabel = "Get insights",
+}: HighlightedCardProps) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -33,7 +39,7 @@ export default function HighlightedCard() {
           endIcon={<ChevronRightRoundedIcon />}
           fullWidth={isSmallScreen}
         >
-          Add Users
+          {actionLabel}
         </Button>
       </CardContent>
     </Card>

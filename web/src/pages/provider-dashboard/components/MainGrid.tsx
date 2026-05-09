@@ -1,13 +1,33 @@
+import { lazy, Suspense } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Copyright from "../internals/components/Copyright";
-import CustomizedDataGrid from "./CustomizedDataGrid";
-import HighlightedCard from "./HighlightedCard";
-import PageViewsBarChart from "./PageViewsBarChart";
-import SessionsChart from "./SessionsChart";
-import StatCard from "./StatCard";
-import type { StatCardProps } from "./StatCard";
+import Copyright from "../../../components/Copyright";
+import type { StatCardProps } from "../../../components/StatCard";
+
+const CustomizedDataGrid = lazy(
+  () => import("../../../components/CustomizedDataGrid"),
+);
+const HighlightedCard = lazy(
+  () => import("../../../components/HighlightedCard"),
+);
+const PageViewsBarChart = lazy(
+  () => import("../../../components/PageViewsBarChart"),
+);
+const SessionsChart = lazy(() => import("../../../components/SessionsChart"));
+const StatCard = lazy(() => import("../../../components/StatCard"));
+
+function WidgetFallback() {
+  return (
+    <Box
+      sx={{
+        minHeight: 160,
+        borderRadius: 1,
+        bgcolor: "background.paper",
+      }}
+    />
+  );
+}
 
 const data: StatCardProps[] = [
   {
@@ -58,17 +78,25 @@ export default function MainGrid() {
       >
         {data.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
-            <StatCard {...card} />
+            <Suspense fallback={<WidgetFallback />}>
+              <StatCard {...card} />
+            </Suspense>
           </Grid>
         ))}
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-          <HighlightedCard />
+          <Suspense fallback={<WidgetFallback />}>
+            <HighlightedCard actionLabel="Add Users" />
+          </Suspense>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <SessionsChart />
+          <Suspense fallback={<WidgetFallback />}>
+            <SessionsChart />
+          </Suspense>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <PageViewsBarChart />
+          <Suspense fallback={<WidgetFallback />}>
+            <PageViewsBarChart />
+          </Suspense>
         </Grid>
       </Grid>
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -76,7 +104,9 @@ export default function MainGrid() {
       </Typography>
       <Grid container spacing={2} columns={12}>
         <Grid size={{ xs: 12, lg: 9 }}>
-          <CustomizedDataGrid />
+          <Suspense fallback={<WidgetFallback />}>
+            <CustomizedDataGrid />
+          </Suspense>
         </Grid>
         <Grid size={{ xs: 12, lg: 3 }}>
           {/* <Stack gap={2} direction={{ xs: "column", sm: "row", lg: "column" }}>

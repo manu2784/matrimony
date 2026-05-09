@@ -1,12 +1,12 @@
 // web/src/layouts/AuthLayout.tsx
 import { Outlet } from "react-router-dom";
-import AppBar from "../components/AppBar";
+import AuthAppBar from "../components/AuthAppBar";
 
 export default function AuthLayout() {
-    return (
-        <>
-            <AppBar />
-            <Outlet />
-        </>
-    );
+  return (
+    <>
+      <AuthAppBar />
+      <Outlet />
+    </>
+  );
 }

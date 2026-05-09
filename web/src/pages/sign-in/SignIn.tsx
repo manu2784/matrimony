@@ -19,8 +19,8 @@ import {
 import ForgotPassword from "./components/ForgotPassword";
 import { Form, useNavigate } from "react-router";
 import { useAuth } from "../../store/context/useAuth";
-// import AppTheme from '../shared-theme/AppTheme';
-// import ColorModeSelect from '../shared-theme/ColorModeSelect';
+// import AppTheme from "../../theme/AppTheme";
+// import ColorModeSelect from "../../theme/ColorModeSelect";
 import {
   GoogleIcon,
   FacebookIcon,

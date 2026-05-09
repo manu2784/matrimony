@@ -15,7 +15,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import logo from "../../../assets/logo.png";
 import { useAuth } from "../../../store/context/useAuth";
-// import ColorModeIconDropdown from '../../shared-theme/ColorModeIconDropdown';
+// import ColorModeIconDropdown from "../../../theme/ColorModeIconDropdown";
 // import Sitemark from "./SitemarkIcon";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
