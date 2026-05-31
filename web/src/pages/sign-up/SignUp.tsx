@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Form, useActionData } from "react-router";
-// import AppTheme from '../shared-theme/AppTheme';
-// import ColorModeSelect from '../shared-theme/ColorModeSelect';
+// import AppTheme from "../../theme/AppTheme";
+// import ColorModeSelect from "../../theme/ColorModeSelect";
 import {
   Alert,
   Box,

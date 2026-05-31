@@ -1,10 +1,6 @@
-import { createBrowserRouter } from "react-router-dom";
-import Home from "./pages/marketing-page/MarketingPage";
-import SignIn from "./pages/sign-in/SignIn";
-import SignUp from "./pages/sign-up/SignUp";
+import type { ComponentType } from "react";
+import { createBrowserRouter, type ActionFunctionArgs } from "react-router-dom";
 import App from "./App";
-import signUpAction from "./helper/actions/signUpAction.ts";
-import Dashboard from "./pages/dashboard/Dashboard.tsx";
 import {
   requireOrgCourseCreatorLoader,
   requireOrgEnrollmentManagerLoader,
@@ -12,113 +8,176 @@ import {
   requireProviderLoader,
   requireTenantDashboardLoader,
 } from "./helper/loaders/authLoader.ts";
-import AuthLayout from "./layouts/AuthLayout.tsx";
-import DashboardLayout from "./pages/dashboard/DashboardLayout.tsx";
-import ProviderDashboard from "./pages/provider-dashboard/ProviderDashboard.tsx";
-import ProviderDashboardLayout from "./pages/provider-dashboard/ProviderDashboardLayout.tsx";
-import AddUser from "./pages/provider-dashboard/views/add-user/AddUser.tsx";
-import AddOrg from "./pages/provider-dashboard/views/add-org/AddOrg.tsx";
-import { createInstituteAction } from "./helper/actions/createInstituteAction.ts";
-import AddCourse from "./pages/provider-dashboard/views/add-course/AddCourse.tsx";
-import { createCourseAction } from "./helper/actions/createCourseAction.ts";
-import Users from "./pages/provider-dashboard/views/users/Users.tsx";
-import DashboardAddUser from "./pages/dashboard/views/add-user/AddUser.tsx";
-import Courses from "./pages/dashboard/views/course/Courses.tsx";
-import CourseDetails from "./pages/dashboard/views/course/CourseDetails.tsx";
-import { createOrgCourseAction } from "./helper/actions/createOrgCourseAction.ts";
-import CourseMaterial from "./pages/dashboard/views/course-material/CourseMaterial.tsx";
-import { createCourseMaterialAction } from "./helper/actions/createCourseMaterialAction.ts";
-import Enrollment from "./pages/dashboard/views/enrollment/Enrollment.tsx";
-import { createEnrollmentAction } from "./helper/actions/createEnrollmentAction.ts";
+
+type ComponentModule = {
+  default: ComponentType;
+};
+
+function lazyRoute(importComponent: () => Promise<ComponentModule>) {
+  return async () => {
+    const { default: Component } = await importComponent();
+    return { Component };
+  };
+}
+
+const signUpAction = async (args: ActionFunctionArgs) => {
+  const { default: action } = await import("./helper/actions/signUpAction.ts");
+  return action(args);
+};
+
+const createInstituteAction = async (args: ActionFunctionArgs) => {
+  const { createInstituteAction: action } =
+    await import("./helper/actions/createInstituteAction.ts");
+  return action(args);
+};
+
+const createCourseAction = async (args: ActionFunctionArgs) => {
+  const { createCourseAction: action } =
+    await import("./helper/actions/createCourseAction.ts");
+  return action(args);
+};
+
+const createOrgCourseAction = async (args: ActionFunctionArgs) => {
+  const { createOrgCourseAction: action } =
+    await import("./helper/actions/createOrgCourseAction.ts");
+  return action(args);
+};
+
+const createCourseMaterialAction = async (args: ActionFunctionArgs) => {
+  const { createCourseMaterialAction: action } =
+    await import("./helper/actions/createCourseMaterialAction.ts");
+  return action(args);
+};
+
+const createEnrollmentAction = async (args: ActionFunctionArgs) => {
+  const { createEnrollmentAction: action } =
+    await import("./helper/actions/createEnrollmentAction.ts");
+  return action(args);
+};
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [{ index: true, element: <Home /> }],
+    children: [
+      {
+        index: true,
+        lazy: lazyRoute(() => import("./pages/marketing-page/MarketingPage")),
+      },
+    ],
   },
   {
-    element: <DashboardLayout />,
+    lazy: lazyRoute(() => import("./pages/dashboard/DashboardLayout")),
     loader: requireTenantDashboardLoader,
     children: [
       {
         path: "/dashboard",
-        element: <Dashboard />,
+        lazy: lazyRoute(() => import("./pages/dashboard/Dashboard")),
         loader: requireTenantDashboardLoader,
       },
       {
         path: "/dashboard/users",
-        element: <DashboardAddUser />,
+        lazy: lazyRoute(
+          () => import("./pages/dashboard/views/add-user/AddUser"),
+        ),
         loader: requireOrgSuperAdminLoader,
       },
       {
         path: "/dashboard/add-user",
-        element: <DashboardAddUser />,
+        lazy: lazyRoute(
+          () => import("./pages/dashboard/views/add-user/AddUser"),
+        ),
         loader: requireOrgSuperAdminLoader,
       },
       {
         path: "/dashboard/courses",
-        element: <Courses />,
+        lazy: lazyRoute(() => import("./pages/dashboard/views/course/Courses")),
         action: createOrgCourseAction,
         loader: requireOrgCourseCreatorLoader,
       },
       {
         path: "/dashboard/courses/:courseId",
-        element: <CourseDetails />,
+        lazy: lazyRoute(
+          () => import("./pages/dashboard/views/course/CourseDetails"),
+        ),
         loader: requireOrgCourseCreatorLoader,
       },
       {
         path: "/dashboard/course-material",
-        element: <CourseMaterial />,
+        lazy: lazyRoute(
+          () =>
+            import("./pages/dashboard/views/course-material/CourseMaterial"),
+        ),
         action: createCourseMaterialAction,
         loader: requireOrgCourseCreatorLoader,
       },
       {
         path: "/dashboard/enrollment",
-        element: <Enrollment />,
+        lazy: lazyRoute(
+          () => import("./pages/dashboard/views/enrollment/Enrollment"),
+        ),
         action: createEnrollmentAction,
         loader: requireOrgEnrollmentManagerLoader,
       },
     ],
   },
   {
-    element: <ProviderDashboardLayout />,
+    lazy: lazyRoute(
+      () => import("./pages/provider-dashboard/ProviderDashboardLayout"),
+    ),
     loader: requireProviderLoader,
     children: [
       {
         path: "/provider-dashboard",
-        element: <ProviderDashboard />,
+        lazy: lazyRoute(
+          () => import("./pages/provider-dashboard/ProviderDashboard"),
+        ),
         loader: requireProviderLoader,
       },
       {
         path: "/add-user",
-        element: <AddUser />,
+        lazy: lazyRoute(
+          () => import("./pages/provider-dashboard/views/add-user/AddUser"),
+        ),
         loader: requireProviderLoader,
       },
       {
         path: "/add-org",
-        element: <AddOrg />,
+        lazy: lazyRoute(
+          () => import("./pages/provider-dashboard/views/add-org/AddOrg"),
+        ),
         action: createInstituteAction,
         loader: requireProviderLoader,
       },
       {
         path: "/add-course",
-        element: <AddCourse />,
+        lazy: lazyRoute(
+          () => import("./pages/provider-dashboard/views/add-course/AddCourse"),
+        ),
         action: createCourseAction,
         loader: requireProviderLoader,
       },
       {
         path: "/users",
-        element: <Users />,
+        lazy: lazyRoute(
+          () => import("./pages/provider-dashboard/views/users/Users"),
+        ),
         loader: requireProviderLoader,
       },
     ],
   },
   {
-    element: <AuthLayout />,
+    lazy: lazyRoute(() => import("./layouts/AuthLayout")),
     children: [
-      { path: "/sign-in", element: <SignIn /> },
-      { path: "/sign-up", element: <SignUp />, action: signUpAction },
+      {
+        path: "/sign-in",
+        lazy: lazyRoute(() => import("./pages/sign-in/SignIn")),
+      },
+      {
+        path: "/sign-up",
+        lazy: lazyRoute(() => import("./pages/sign-up/SignUp")),
+        action: signUpAction,
+      },
     ],
   },
 ]);

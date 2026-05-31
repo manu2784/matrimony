@@ -8,11 +8,11 @@ import Stack from "@mui/material/Stack";
 import AppNavbar from "./components/AppNavbar";
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
-import AppTheme from "../shared-theme/AppTheme";
+import AppTheme from "../../theme/AppTheme";
 import {
   chartsCustomizations,
   treeViewCustomizations,
-} from "./theme/customizations";
+} from "../../theme/customizations";
 import { useAuth } from "../../store/context/useAuth";
 import { useEffect } from "react";
 import { useLoaderData, useNavigate, Outlet } from "react-router-dom";
